@@ -13,6 +13,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
 class LawyerSerializer(serializers.ModelSerializer):
     ratting = serializers.SerializerMethodField()
+    active_cases = serializers.SerializerMethodField()
 
     class Meta:
         model = Lawyer
@@ -27,6 +28,7 @@ class LawyerSerializer(serializers.ModelSerializer):
             "price",
             "characterization",
             "ratting",
+            "active_cases",
         ]
 
     @staticmethod
@@ -38,8 +40,14 @@ class LawyerSerializer(serializers.ModelSerializer):
 
         return int(ratting)
 
+    @staticmethod
+    def get_active_cases(obj):
+        active_cases = obj.lawyer_cases.filter(is_active=True)
+        serializer = CaseSerializer(active_cases, many=True)
+        return serializer.data
+
 
 class CaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Case
-        fields = ["id", "is_active", "lawyer", "client", "case_closed_successfully", "article"]
+        fields = ["id", "is_active", "lawyer", "client", "case_closed_successfully", "article", "description"]
