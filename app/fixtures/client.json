@@ -1,0 +1,14 @@
+[
+  {
+    "model": "app.client",
+    "pk": "1",
+    "fields": {
+      "id": 1,
+      "name": "John",
+      "surname": "Doe",
+      "birthdate": "2000-10-18",
+      "phone": "+380661234209",
+      "email": "john@gmail.com"
+    }
+  }
+]

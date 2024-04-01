@@ -1,0 +1,41 @@
+[
+  {
+    "model": "app.client",
+    "pk": "1",
+    "fields": {
+      "id": 1,
+      "name": "John",
+      "surname": "Doe",
+      "birthdate": "2000-10-18",
+      "phone": "+380661234209",
+      "email": "john@gmail.com"
+    }
+  },
+  {
+    "model": "app.lawyer",
+    "pk": "1",
+    "fields": {
+      "id": 1,
+      "name": "Martin",
+      "surname": "Sad",
+      "birthdate": "1980-06-10",
+      "experience": 5,
+      "successful_cases": 20,
+      "unsuccessful_cases": 5,
+      "price": 2000,
+      "characterization": "Lucky"
+    }
+  },
+  {
+    "model": "app.case",
+    "pk": "1",
+    "fields": {
+      "is_active": true,
+      "lawyer": 1,
+      "client": 1,
+      "case_closed_successfully": false,
+      "article": "112",
+      "description": "Test case"
+    }
+  }
+]
