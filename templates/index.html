@@ -1,0 +1,18 @@
+<form action="" enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    {% for lawyer in lawyers %}
+        <div>
+            <em>Name:{{ lawyer.name }}</em><br>
+            <em>Surname{{ lawyer.surname }}</em><br>
+            <em>BD{{ lawyer.birthdate }}</em><br>
+            <em>EXP{{ lawyer.experience }}</em><br>
+            <em>SC{{ lawyer.successful_cases }}</em><br>
+            <em>UC{{ lawyer.unsuccessful_cases }}</em><br>
+            <em>Price{{ lawyer.price }}</em><br>
+            <em>Characterization{{ lawyer.characterization }}</em><br>
+        <br>
+        </div>
+    {% endfor %}
+    {{ lawyers.errors }}
+    {#    <input type="submit" value="OK">#}
+</form>
