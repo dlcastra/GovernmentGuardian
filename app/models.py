@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -7,6 +8,7 @@ class Client(models.Model):
     birthdate = models.DateField()
     phone = models.CharField(max_length=20, blank=True)
     email = models.EmailField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"ID: {self.id} | Client: {self.name} {self.surname}"
@@ -21,15 +23,10 @@ class Lawyer(models.Model):
     unsuccessful_cases = models.PositiveIntegerField(default=0)
     price = models.PositiveIntegerField()
     characterization = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"ID: {self.id} | Lawyer: {self.name} {self.surname}"
-
-
-class CaseForm(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="case_forms")
-    description = models.TextField()
-    article = models.CharField(max_length=255)
 
 
 class Case(models.Model):
@@ -38,4 +35,4 @@ class Case(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="client_lawyer")
     case_closed_successfully = models.BooleanField()
     article = models.CharField(max_length=255)
-    description = models.TextField(null=True)
+    description = models.TextField()
