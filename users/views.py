@@ -3,12 +3,14 @@ from urllib.parse import quote_plus, urlencode
 from authlib.integrations.django_client import OAuth
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView
 from django.core.mail import send_mail
 from django.core.signing import Signer, BadSignature
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from app.forms import ClientForm, LawyerForm
+from app.models import Lawyer, Client
 from users.forms import UserCreationFormWithEmail
 
 """ --- SIGN UP AND SIGN IN --- """
@@ -43,6 +45,18 @@ def register_view(request):
     return render(request, "registration/register.html", {"form": form})
 
 
+class CustomLoginView(LoginView):
+
+    def get_success_url(self):
+        user = self.request.user
+        lawyer = Lawyer.objects.filter(user=user)
+        client = Client.objects.filter(user=user)
+        if lawyer.exists() or client.exists():
+            return "/get-list/"
+        else:
+            return "/select-role/"
+
+
 def activate(request, user_signed):
     try:
         user_id = Signer().unsign(user_signed)
@@ -70,12 +84,11 @@ oauth.register(
 
 def callback(request):
     token = oauth.auth0.authorize_access_token(request)
-    print(token)
     request.session["user"] = token
 
-    email = token.get("email")
-    user, created = User.objects.get_or_create(email=email)
-    request.session["user"] = user.pk
+    user_email = token
+    user, created = User.objects.get_or_create(email=user_email)
+    user.save()
 
     return redirect(request.build_absolute_uri(reverse("roles")))
 
@@ -114,26 +127,26 @@ def select_role(request):
 
 
 def client_registration(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = ClientForm(request.POST)
         if form.is_valid():
             client = form.save(commit=False)
             client.user = request.user
             client.save()
-            return redirect('list')
+            return redirect("list")
     else:
         form = ClientForm()
     return render(request, 'roles/client_registration.html', {'form': form})
 
 
 def lawyer_registration(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = LawyerForm(request.POST)
         if form.is_valid():
             lawyer = form.save(commit=False)
             lawyer.user = request.user
             lawyer.save()
-            return redirect('list')
+            return redirect("list")
     else:
         form = LawyerForm()
-    return render(request, 'roles/lawyer_registration.html', {'form': form})
+    return render(request, "roles/lawyer_registration.html", {"form": form})
