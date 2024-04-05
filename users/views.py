@@ -136,7 +136,7 @@ def client_registration(request):
             return redirect("list")
     else:
         form = ClientForm()
-    return render(request, 'roles/client_registration.html', {'form': form})
+    return render(request, "roles/client_registration.html", {"form": form})
 
 
 def lawyer_registration(request):
