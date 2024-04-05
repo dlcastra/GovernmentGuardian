@@ -15,10 +15,10 @@
     <!-- Add other profile fields here -->
 
     <!-- Form to update profile information -->
-    <form method="post">
+    <form method="get">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Update Profile</button>
+        <input type="submit" formaction="{% url 'edit_client' %}" class="btn btn-primary" value="Edit profile">
     </form>
 </body>
 </html>

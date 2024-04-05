@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Blog</title>
+</head>
+<body style="background-color: #e5e5e5;">
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Edit Blog</h1>
+                <form method="post">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <input type="submit" class="btn btn-primary" value="Save">
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
