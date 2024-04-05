@@ -1,5 +1,4 @@
-from django.shortcuts import render, redirect
-from django.views.generic import DetailView
+from django.shortcuts import render, redirect, get_object_or_404
 
 from app.forms import LawyerForm, ClientForm
 from app.models import Lawyer, Client
@@ -19,48 +18,46 @@ def lawyers_list(request):
 """ --- FUNCTIONS FOR LAWYER --- """
 
 
-class LawyerProfile(DetailView):
-    model = Lawyer
-    template_name = "profiles/lawyer/lawyer_profile.html"
+def lawyer_profile(request):
+    user = request.user
+    lawyer = Lawyer.objects.get(user=user)
+    return render(request, "profiles/lawyer/lawyer_profile.html", {"lawyer": lawyer})
 
-    def get(self, request, *args, **kwargs):
-        user = request.user
-        lawyer = Lawyer.objects.get(user=user)
-        return render(request, self.template_name, {"lawyer": lawyer})
 
-    def post(self, request, *args, **kwargs):
-        user = request.user
-        lawyer = Lawyer.objects.get(user=user)
+def edit_lawyer_profile(request):
+    lawyer = get_object_or_404(Lawyer, user=request.user)
+    if request.method == "GET":
+        form = LawyerForm(instance=lawyer)
+        return render(request, "profiles/edit_profile.html", {"form": form})
+
+    if request.method == "POST":
         form = LawyerForm(request.POST, instance=lawyer)
+        if form.is_valid():
+            form.save()
+            return redirect("lawyer_profile")
 
-        if "edit" in request.POST:
-            if form.is_valid():
-                form.save()
-                return redirect("lawyer_profile")
-
-        return render(request, "profiles/lawyer/edit_profile.html", {"lawyer": form})
+    return render(request, "profiles/edit_profile.html", {"form": lawyer})
 
 
 """ --- FUNCTIONS FOR CLIENT ---"""
 
 
-class ClientProfile(DetailView):
-    model = Client
-    template_name = "profiles/client/client_profile.html"
+def client_profile(request):
+    user = request.user
+    client = Client.objects.get(user=user)
+    return render(request, "profiles/client/client_profile.html", {"client": client})
 
-    def get(self, request, *args, **kwargs):
-        user = request.user
-        client = Client.objects.get(user=user)
-        return render(request, self.template_name, {"client": client})
 
-    def post(self, request, *args, **kwargs):
-        user = request.user
-        client = Client.objects.get(user=user)
+def edit_client_profile(request):
+    client = get_object_or_404(Client, user=request.user)
+    if request.method == "GET":
+        form = ClientForm(instance=client)
+        return render(request, "profiles/edit_profile.html", {"form": form})
+
+    if request.method == "POST":
         form = ClientForm(request.POST, instance=client)
+        if form.is_valid():
+            form.save()
+            return redirect("client_profile")
 
-        if "edit" in request.POST:
-            if form.is_valid():
-                form.save()
-                return redirect("client_profile")
-
-        return render(request, "profiles/client/edit_profile.html", {"client": form})
+    return render(request, "profiles/edit_profile.html", {"form": client})
