@@ -61,6 +61,20 @@
                     <a class="nav-link" href="{% url 'profile' %}">Your Profile</a>
                 </li>
             </ul>
+            <ul class="navbar-nav ms-auto">
+                {% if user.is_authenticated %}
+                    <li>
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">SignUp</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login_view' %}">SignIn</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
     </div>
 </nav>
