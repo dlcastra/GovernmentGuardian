@@ -1,0 +1,90 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Post</title>
+    <script src="{% static 'admin/js/jquery.init.js' %}"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .nav-item.active a {
+            color: #000;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            padding: 0.5rem 1rem;
+        }
+
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            margin-top: auto;
+        }
+
+        .footer-logo,
+        .footer-services,
+        .footer-contact {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'index' %}">
+            <h4>Government Guardian</h4>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item {% if request.path == '/' %}active{% endif %}">
+                    <a class="nav-link" href="/">Main page</a>
+                </li>
+                <li class="nav-item {% if request.path == '/get-list/' %}active{% endif %}">
+                    <a class="nav-link" href="/get-list/">List of lawyers</a>
+                </li>
+                <li class="nav-item {% if request.path == '/client-profile/' or request.path == "/lawyer-profile/" %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'profile' %}">Your Profile</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    {% block content %}
+    {% endblock %}
+</div>
+
+<footer class="footer py-2">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-3 footer-logo d-flex align-items-center justify-content-center">
+                <a class="navbar-brand" href="{% url 'index' %}" style="color: black">
+                    <h4>Government Guardian</h4>
+                </a>
+            </div>
+            <div class="col-md-6 footer-services">
+            </div>
+            <div class="col-md-3 footer-contact">
+                <p>Kontakt</p>
+                <p>Email: petpost@gmail.com</p>
+                <p>Telefon: +48 123 456 789</p>
+            </div>
+        </div>
+    </div>
+</footer>

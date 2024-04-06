@@ -61,3 +61,20 @@ def edit_client_profile(request):
             return redirect("client_profile")
 
     return render(request, "profiles/edit_profile.html", {"form": client})
+
+
+""" --- COMMON FUNCTIONS --- """
+
+
+def profile(request):
+    if request.user.is_authenticated:
+
+        if Client.objects.filter(user=request.user).exists():
+            return redirect("client_profile")
+        elif Lawyer.objects.filter(user=request.user).exists():
+            return redirect("lawyer_profile")
+        else:
+            return render(request, "profiles/not_authenticated.html")
+
+    else:
+        return render(request, "profiles/not_authenticated.html")

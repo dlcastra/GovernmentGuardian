@@ -8,7 +8,7 @@ class Client(models.Model):
     birthdate = models.DateField()
     phone = models.CharField(max_length=20, blank=True)
     email = models.EmailField(max_length=255)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_is_client")
 
     def __str__(self):
         return f"ID: {self.id} | Client: {self.name} {self.surname}"
@@ -23,7 +23,7 @@ class Lawyer(models.Model):
     unsuccessful_cases = models.PositiveIntegerField(default=0)
     price = models.PositiveIntegerField()
     characterization = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_is_lawyer")
 
     def __str__(self):
         return f"ID: {self.id} | Lawyer: {self.name} {self.surname}"

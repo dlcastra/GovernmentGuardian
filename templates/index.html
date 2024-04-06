@@ -1,3 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
 <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {% for lawyer in lawyers %}
@@ -10,9 +12,10 @@
             <em>UC{{ lawyer.unsuccessful_cases }}</em><br>
             <em>Price{{ lawyer.price }}</em><br>
             <em>Characterization{{ lawyer.characterization }}</em><br>
-        <br>
+            <br>
         </div>
     {% endfor %}
     {{ lawyers.errors }}
     {#    <input type="submit" value="OK">#}
 </form>
+{% endblock %}

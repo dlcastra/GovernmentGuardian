@@ -1,24 +1,139 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lawyer Profile</title>
-</head>
-<body>
-    <h1>Lawyer Profile</h1>
-    <h2>Welcome, {{ client.name }}</h2>
+{% extends "base.html" %}
+{% block content %}
+<style>
+    body {
+        margin-top: 20px;
+        color: #1a202c;
+        text-align: left;
+        background-color: #e2e8f0;
+    }
 
-    <!-- Display current profile information -->
-    <p>Name: {{ client.name }}</p>
-    <p>Surname: {{ client.surname }}</p>
-    <!-- Add other profile fields here -->
+    .main-body {
+        padding: 15px;
+    }
 
-    <!-- Form to update profile information -->
-    <form method="get">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" formaction="{% url 'edit_client' %}" class="btn btn-primary" value="Edit profile">
-    </form>
-</body>
-</html>
+    .card {
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        height: 300px;
+    }
+
+
+    .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 0 solid rgba(0, 0, 0, .125);
+        border-radius: .25rem;
+    }
+
+    .card-body {
+        flex: 1;
+    }
+
+    .gutters-sm {
+        margin-right: -8px;
+        margin-left: -8px;
+    }
+
+    .gutters-sm > .col, .gutters-sm > [class*=col-] {
+        padding-right: 8px;
+        padding-left: 8px;
+    }
+
+    .mb-3 {
+        margin-bottom: 1rem !important;
+    }
+
+    .row.gutters-sm > .col-md-4 {
+        margin-bottom: 20px;
+        display: flex;
+    }
+</style>
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<div class="container">
+    <div class="main-body">
+        <div class="row gutters-sm">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin"
+                                 class="rounded-circle" width="150">
+                            <div class="mt-3" style="padding: 35px">
+                                {% if client.client_lawyer.exists %}
+                                    <h4>Your
+                                        lawyer: {{ client.client_lawyer.first.lawyer.name }} {{ client.client_lawyer.first.lawyer.surname }}</h4>
+                                {% else %}
+                                    <h4>You don't have a lawyer assigned yet.</h4>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Full Name:</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                {{ client.name }} {{ client.surname }}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Birthdate:</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                {{ client.birthdate }}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Email:</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                {{ client.email }}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Mobile:</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                {{ client.phone }}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <form method="get">
+                                    {% csrf_token %}
+                                    {{ form.as_p }}
+                                    <input type="submit" formaction="{% url 'edit_client' %}" class="btn btn-primary"
+                                           value="Edit profile">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
