@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
     <style>
         body {
@@ -31,6 +32,8 @@
             background-clip: border-box;
             border: 0 solid rgba(0, 0, 0, .125);
             border-radius: .25rem;
+            min-height: 414px;
+            height: auto;
         }
 
         .card-body {
@@ -42,7 +45,7 @@
             margin-left: -8px;
         }
 
-        .gutters-sm > .col, .gutters-sm > [class*=col-] {
+        .gutters-sm, .gutters-sm {
             padding-right: 8px;
             padding-left: 8px;
         }
@@ -56,10 +59,11 @@
             display: flex;
         }
     </style>
-    <script src="../script/ratting.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
+
     <div class="container">
         <div class="main-body">
             <div class="row gutters-sm">
@@ -69,7 +73,35 @@
                             <div class="d-flex flex-column align-items-center text-center">
                                 <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin"
                                      class="rounded-circle" width="150">
-{#                                <div id="ratting"></div>#}
+                                <div id="rating" style="padding: 70px; font-size: 22px"></div>
+                                <script>
+                                    $(document).ready(function () {
+                                        function calculateRating() {
+                                            const successfulCases = parseFloat({{ lawyer.successful_cases }});
+                                            const unsuccessfulCases = parseFloat({{ lawyer.unsuccessful_cases }});
+                                            const experience = parseFloat({{ lawyer.experience }});
+
+                                            const rating = (successfulCases - unsuccessfulCases) * Math.sqrt(1 + experience);
+                                            $('#rating').text("Your rating: " + rating.toFixed(2));
+                                        }
+
+                                        calculateRating();
+                                        setInterval(calculateRating, 1000);
+                                    });
+                                </script>
+                                <div class="progress" style="width: 100%; margin-bottom: 40px">
+                                    <div class="progress-bar bg-success" role="progressbar"
+                                         style="width: {{ success_percentage }}%;"
+                                         aria-valuenow="{{ lawyer.successful_cases }}"
+                                         aria-valuemin="0" aria-valuemax="100">{{ lawyer.successful_cases }}</div>
+                                    <div class="progress-bar bg-danger" role="progressbar"
+                                         style="width: {{ failure_percentage }}%;"
+                                         aria-valuenow="{{ lawyer.unsuccessful_cases }}"
+                                         aria-valuemin="0" aria-valuemax="100">{{ lawyer.unsuccessful_cases }}</div>
+                                </div>
+                                {#                                <div>#}
+                                {#                                    <img src="{% static 'admin/img/icon-alert.svg' %}" alt="GG">#}
+                                {#                                </div>#}
                             </div>
                         </div>
                     </div>
@@ -144,8 +176,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="card mb-3" style="width: 830px; height: 350px; margin-left: 430px">
-                    <div class="card-body">
+                <div class="col-md-8 mb-3" style="text-align: left; width: auto; height: auto">
+                    <div class="card mb-3" style="padding: 10px;">
                         <div class="row">
                             <div>
                                 <h6 class="mb-0">Characterization:</h6>
@@ -156,6 +188,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

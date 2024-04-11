@@ -1,21 +1,109 @@
 {% extends "base.html" %}
 {% block content %}
-<form action="" enctype="multipart/form-data" method="post">
-    {% csrf_token %}
-    {% for lawyer in lawyers %}
-        <div>
-            <em>Name:{{ lawyer.name }}</em><br>
-            <em>Surname{{ lawyer.surname }}</em><br>
-            <em>BD{{ lawyer.birthdate }}</em><br>
-            <em>EXP{{ lawyer.experience }}</em><br>
-            <em>SC{{ lawyer.successful_cases }}</em><br>
-            <em>UC{{ lawyer.unsuccessful_cases }}</em><br>
-            <em>Price{{ lawyer.price }}</em><br>
-            <em>Characterization{{ lawyer.characterization }}</em><br>
-            <br>
+    <style>
+        body {
+            margin-top: 20px;
+            color: #1a202c;
+            text-align: left;
+            background-color: #e2e8f0;
+        }
+
+        .main-body {
+            padding: 15px;
+        }
+
+        .card {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+        }
+
+
+        .card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 0 solid rgba(0, 0, 0, .125);
+            border-radius: .25rem;
+
+        }
+
+        .card-body {
+            flex: 1;
+        }
+
+        .gutters-sm {
+            margin-right: -8px;
+            margin-left: -8px;
+        }
+
+        .gutters-sm, .gutters-sm {
+            padding-right: 8px;
+            padding-left: 8px;
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem !important;
+        }
+
+        .row.gutters-sm > .col-md-4 {
+            margin-bottom: 20px;
+            display: flex;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    <div class="container">
+        <div class="main-body">
+            <div class="row justify-content-center text-center" style="padding: 20px">
+                {% for lawyer in lawyers %}
+                    <div class="col-md-8 mb-3">
+                        <div class="card mb-3">
+                            <div class="card-body" style="text-align: left">
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <h6 class="mb-0">Full Name:</h6>
+                                    </div>
+                                    <div class="col-sm-2 text-secondary">
+                                        {{ lawyer.name }} {{ lawyer.surname }}
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <h6 class="mb-0">Experience:</h6>
+                                    </div>
+                                    <div class="col-sm-2 text-secondary">
+                                        {{ lawyer.experience }}
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <h6 class="mb-0">Price:</h6>
+                                    </div>
+                                    <div class="col-sm-2 text-secondary">
+                                        {{ lawyer.price }}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
-    {% endfor %}
-    {{ lawyers.errors }}
-    {#    <input type="submit" value="OK">#}
-</form>
+    </div>
+
+
 {% endblock %}
