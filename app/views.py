@@ -21,7 +21,15 @@ def lawyers_list(request):
 def lawyer_profile(request):
     user = request.user
     lawyer = Lawyer.objects.get(user=user)
-    return render(request, "profiles/lawyer/lawyer_profile.html", {"lawyer": lawyer})
+    total_cases = lawyer.successful_cases + lawyer.unsuccessful_cases
+    success_percentage = (lawyer.successful_cases / total_cases) * 100
+    failure_percentage = (lawyer.unsuccessful_cases / total_cases) * 100
+    context = {
+        'lawyer': lawyer,
+        'success_percentage': success_percentage,
+        'failure_percentage': failure_percentage,
+    }
+    return render(request, "profiles/lawyer/lawyer_profile.html", context)
 
 
 def edit_lawyer_profile(request):
