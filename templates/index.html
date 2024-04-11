@@ -72,6 +72,14 @@
                             <div class="card-body" style="text-align: left">
                                 <div class="row">
                                     <div class="col-sm-2">
+                                        <h6 class="mb-0">ID:</h6>
+                                    </div>
+                                    <div class="col-sm-2 text-secondary">
+                                        {{ lawyer.id }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-2">
                                         <h6 class="mb-0">Full Name:</h6>
                                     </div>
                                     <div class="col-sm-2 text-secondary">
@@ -97,6 +105,12 @@
                                     </div>
                                 </div>
 
+                                <form method="get">
+                                    {% csrf_token %}
+                                    <input type="submit" formaction="{% url 'lawyer_info' lawyer.id %}"
+                                           class="btn btn-primary"
+                                           value="More info">
+                                </form>
                             </div>
                         </div>
                     </div>

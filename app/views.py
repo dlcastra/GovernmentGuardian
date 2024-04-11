@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
-from app.forms import LawyerForm, ClientForm
-from app.models import Lawyer, Client
+from app.forms import LawyerForm, ClientForm, ClientCaseForm
+from app.models import Lawyer, Client, Case
 
 """ --- HOME PAGE --- """
 
@@ -25,9 +25,9 @@ def lawyer_profile(request):
     success_percentage = (lawyer.successful_cases / total_cases) * 100
     failure_percentage = (lawyer.unsuccessful_cases / total_cases) * 100
     context = {
-        'lawyer': lawyer,
-        'success_percentage': success_percentage,
-        'failure_percentage': failure_percentage,
+        "lawyer": lawyer,
+        "success_percentage": success_percentage,
+        "failure_percentage": failure_percentage,
     }
     return render(request, "profiles/lawyer/lawyer_profile.html", context)
 
@@ -47,13 +47,44 @@ def edit_lawyer_profile(request):
     return render(request, "profiles/edit_profile.html", {"form": lawyer})
 
 
+def retain_lawyer(request, lawyer_id):
+    lawyer = get_object_or_404(Lawyer, pk=lawyer_id)
+    if request.method == "GET":
+        return render(request, "ordering/lawyer_info.html", {"lawyer": lawyer})
+
+    elif request.method == "GET":
+        return redirect("create_case", lawyer_id)
+
+    return render(request, "ordering/lawyer_info.html", {"lawyer": lawyer})
+
+
+def create_case(request, lawyer_id):
+    user = request.user
+    client = Client.objects.get(user=user)
+    lawyer = get_object_or_404(Lawyer, pk=lawyer_id)
+    if request.method == "GET":
+        form = ClientCaseForm(initial={"lawyer": lawyer, "client": client})
+        return render(request, "ordering/case_form.html", {"form": form})
+
+    form = ClientCaseForm(request.POST)
+    if form.is_valid():
+        case = form.save(commit=False)
+        case.lawyer = lawyer
+        case.save()
+        return redirect("client_profile")
+
+    return render(request, "ordering/case_form.html", {"form": form})
+
+
 """ --- FUNCTIONS FOR CLIENT ---"""
 
 
 def client_profile(request):
     user = request.user
     client = Client.objects.get(user=user)
-    return render(request, "profiles/client/client_profile.html", {"client": client})
+    case = Case.objects.filter(client=client, is_active=True)
+    context = {"client": client, "case": case}
+    return render(request, "profiles/client/client_profile.html", context)
 
 
 def edit_client_profile(request):

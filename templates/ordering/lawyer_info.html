@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    <h1>Lawyer info</h1>
+
+    <p>Full name: {{ lawyer.name }} {{ lawyer.surname }}</p>
+    <p>Experience: {{ lawyer.experience }}</p>
+    <p>SC: {{ lawyer.successful_cases }}</p>
+    <p>UC: {{ lawyer.unsuccessful_cases }}</p>
+    <p>Price: {{ lawyer.price }}</p>
+    <p>Characterization: {{ lawyer.characterization }}</p>
+
+    <form method="GET">
+        {% csrf_token %}
+        <input type="submit" formaction="{% url 'create_case' lawyer.id %}"
+               class="btn btn-primary"
+               value="Retain a lawyer">
+    </form>
+
+{% endblock %}
