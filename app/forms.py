@@ -143,10 +143,10 @@ class LawyerForm(forms.ModelForm):
         return price
 
 
-class CaseForm(forms.ModelForm):
+class ClientCaseForm(forms.ModelForm):
     class Meta:
         model = Case
-        fields = ["is_active", "lawyer", "client", "case_closed_successfully", "article", "description"]
+        fields = ["lawyer", "article", "description"]
         labels = {
             "is_active": "Now is active",
             "lawyer": "Lawyer",
@@ -155,7 +155,14 @@ class CaseForm(forms.ModelForm):
             "description": "Description",
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["lawyer"].widget.attrs["readonly"] = True
+        self.fields["lawyer"].disabled = True
+
     def clean_article(self):
         article = self.cleaned_data["article"]
         if len(article) > 255:
             raise forms.ValidationError("Article is too long")
+
+        return article
