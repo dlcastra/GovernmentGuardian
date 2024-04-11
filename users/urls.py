@@ -1,5 +1,7 @@
+from django.conf.urls.static import static
 from django.urls import path
 
+from core import settings
 from users import views
 
 urlpatterns = [
@@ -13,3 +15,7 @@ urlpatterns = [
     path("create-client/", views.client_registration, name="create_client"),
     path("create-lawyer/", views.lawyer_registration, name="create_lawyer"),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
