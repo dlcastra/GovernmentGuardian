@@ -48,11 +48,17 @@ def edit_lawyer_profile(request):
 
 
 def retain_lawyer(request, lawyer_id):
+    client = Client.objects.get(user=request.user)
     lawyer = get_object_or_404(Lawyer, pk=lawyer_id)
-    if request.method == "GET":
+    case = Case.objects.filter(client=client, is_active=True)
+
+    if "get_info" in request.GET:
         return render(request, "ordering/lawyer_info.html", {"lawyer": lawyer})
 
-    elif request.method == "GET":
+    elif "retain" in request.GET and case.exists():
+        return redirect("index")
+
+    elif "retain" in request.GET:
         return redirect("create_case", lawyer_id)
 
     return render(request, "ordering/lawyer_info.html", {"lawyer": lawyer})
