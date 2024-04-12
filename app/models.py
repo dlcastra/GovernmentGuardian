@@ -33,6 +33,6 @@ class Case(models.Model):
     is_active = models.BooleanField(default=True)
     lawyer = models.ForeignKey(Lawyer, on_delete=models.CASCADE, related_name="lawyer_cases")
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="client_lawyer")
-    case_closed_successfully = models.BooleanField()
+    case_closed_successfully = models.BooleanField(default=False)
     article = models.CharField(max_length=255)
     description = models.TextField()
