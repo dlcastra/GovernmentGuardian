@@ -146,19 +146,18 @@ class LawyerForm(forms.ModelForm):
 class ClientCaseForm(forms.ModelForm):
     class Meta:
         model = Case
-        fields = ["lawyer", "article", "description"]
+        fields = ["lawyer", "client", "article", "description"]
         labels = {
-            "is_active": "Now is active",
-            "lawyer": "Lawyer",
-            "client": "Client",
-            "case_closed_successfully": "Completed successfully",
+            "article": "Article",
             "description": "Description",
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["lawyer"].widget.attrs["readonly"] = True
-        self.fields["lawyer"].disabled = True
+        self.fields["lawyer"].widget = forms.HiddenInput()
+        self.fields["client"].widget = forms.HiddenInput()
+        self.fields["lawyer"].initial = kwargs.get("initial", {}).get("lawyer")
+        self.fields["client"].initial = kwargs.get("initial", {}).get("client")
 
     def clean_article(self):
         article = self.cleaned_data["article"]
