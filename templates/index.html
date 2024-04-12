@@ -109,7 +109,9 @@
                                     {% csrf_token %}
                                     <input type="submit" formaction="{% url 'lawyer_info' lawyer.id %}"
                                            class="btn btn-primary"
-                                           value="More info">
+                                           value="More info"
+                                           name="get_info"
+                                    >
                                 </form>
                             </div>
                         </div>

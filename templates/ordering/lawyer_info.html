@@ -16,9 +16,11 @@
 
     <form method="GET">
         {% csrf_token %}
-        <input type="submit" formaction="{% url 'create_case' lawyer.id %}"
+        <input type="submit"
                class="btn btn-primary"
-               value="Retain a lawyer">
+               value="Retain a lawyer"
+               name="retain"
+        >
     </form>
 
 {% endblock %}
