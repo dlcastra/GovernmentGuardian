@@ -165,3 +165,12 @@ class ClientCaseForm(forms.ModelForm):
             raise forms.ValidationError("Article is too long")
 
         return article
+
+
+class EditLawyerForm(LawyerForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["successful_cases"].widget = forms.HiddenInput()
+        self.fields["unsuccessful_cases"].widget = forms.HiddenInput()
+        self.fields["successful_cases"].initial = kwargs.get("initial", {}).get("successful_cases")
+        self.fields["unsuccessful_cases"].initial = kwargs.get("initial", {}).get("unsuccessful_cases")
