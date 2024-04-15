@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% block content %}
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Active Cases</title>
+    </head>
+    <body>
+    <h1>Active Cases</h1>
+    {% if cases %}
+        <ul>
+            {% for case in cases %}
+                <li>
+                    <strong>Full name:</strong> {{ case.client.name }} {{ case.client.surname }}<br>
+                    <strong>Article:</strong> {{ case.article }}<br>
+                    <strong>Description:</strong> {{ case.description }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No active cases found.</p>
+    {% endif %}
+
+    <button type="button" onclick="window.location.href='{% url 'index' %}'" class="btn btn-light"
+            style="margin-top: 10px; margin-left: 10px">
+        Back to website
+    </button>
+    </body>
+    </html>
+{% endblock %}
