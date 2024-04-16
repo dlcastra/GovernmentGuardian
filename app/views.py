@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
 from app.forms import ClientForm, ClientCaseForm, EditLawyerForm
+from app.helpers import redirect_based_on_user_type, edit_method
 from app.models import Lawyer, Client, Case
 
 """ --- HOME PAGE --- """
@@ -34,17 +35,10 @@ def lawyer_profile(request):
 
 def edit_lawyer_profile(request):
     lawyer = get_object_or_404(Lawyer, user=request.user)
-    if request.method == "GET":
-        form = EditLawyerForm(instance=lawyer)
-        return render(request, "profiles/edit_profile.html", {"form": form})
+    get_instance = EditLawyerForm(instance=lawyer)
+    post_instance = EditLawyerForm(request.POST, instance=lawyer)
 
-    if request.method == "POST":
-        form = EditLawyerForm(request.POST, instance=lawyer)
-        if form.is_valid():
-            form.save()
-            return redirect("lawyer_profile")
-
-    return render(request, "profiles/edit_profile.html", {"form": lawyer})
+    return edit_method(request, lawyer, get_instance, post_instance, "profiles/edit_profile.html", "lawyer_profile")
 
 
 def lawyer_active_cases(request):
@@ -68,17 +62,10 @@ def client_profile(request):
 
 def edit_client_profile(request):
     client = get_object_or_404(Client, user=request.user)
-    if request.method == "GET":
-        form = ClientForm(instance=client)
-        return render(request, "profiles/edit_profile.html", {"form": form})
+    get_instance = ClientForm(instance=client)
+    post_instance = ClientForm(request.POST, instance=client)
 
-    if request.method == "POST":
-        form = ClientForm(request.POST, instance=client)
-        if form.is_valid():
-            form.save()
-            return redirect("client_profile")
-
-    return render(request, "profiles/edit_profile.html", {"form": client})
+    return edit_method(request, client, get_instance, post_instance, "profiles/edit_profile.html", "client_profile")
 
 
 def retain_lawyer(request, lawyer_id):
@@ -123,35 +110,12 @@ def lawyer_already_taken(request):
 """ --- COMMON FUNCTIONS --- """
 
 
-def who_is_user(request):
-    if request.user.is_authenticated:
-        if Lawyer.objects.filter(user=request.user).exists():
-            return True
-
-        elif Client.objects.filter(user=request.user).exists():
-            return False
-
-        else:
-            return render(request, "profiles/not_authenticated.html")
-
-    else:
-        return render(request, "profiles/not_authenticated.html")
-
-
 def profile(request):
-    user_type = who_is_user(request)
-    if user_type:
-        return redirect("lawyer_profile")
-    else:
-        return redirect("client_profile")
+    return redirect_based_on_user_type(request, "lawyer_profile", "client_profile")
 
 
 def navigation_user_info(request):
-    user_type = who_is_user(request)
-    if user_type:
-        return redirect("lawyer_active_cases")
-    else:
-        return redirect("list")
+    return redirect_based_on_user_type(request, "lawyer_active_cases", "list")
 
 
 """ --- CUSTOM ERRORS --- """

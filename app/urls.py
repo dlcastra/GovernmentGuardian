@@ -1,7 +1,7 @@
 from django.conf.urls.static import static
 from django.urls import path
 
-from app import views
+from app import views, helpers
 from core import settings
 
 urlpatterns = [
@@ -15,7 +15,7 @@ urlpatterns = [
     path("edit-client-profile/", views.edit_client_profile, name="edit_client"),
     path("active-cases/", views.lawyer_active_cases, name="lawyer_active_cases"),
     # Navigation panel
-    path("who-is-user/", views.who_is_user, name="who_is_user"),
+    path("who-is-user/", helpers.get_user_type, name="who_is_user"),
     path("profile/", views.profile, name="profile"),
     path("navigation/", views.navigation_user_info, name="navigation"),
     # Ordering
