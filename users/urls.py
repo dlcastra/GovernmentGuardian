@@ -7,7 +7,7 @@ from users import views
 urlpatterns = [
     path("register/", views.register_view, name="register"),
     path("login/", views.CustomLoginView.as_view(), name="login_view"),
-    path("google-login", views.login, name="login"),
+    path("google-login", views.auth0_login, name="login"),
     path("logout", views.logout, name="logout"),
     path("callback", views.callback, name="callback"),
     path("activate/<user_signed>", views.activate, name="activate"),

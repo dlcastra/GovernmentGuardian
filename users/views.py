@@ -2,6 +2,7 @@ from urllib.parse import quote_plus, urlencode
 
 from authlib.integrations.django_client import OAuth
 from django.conf import settings
+from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 from django.core.mail import send_mail
@@ -85,15 +86,22 @@ oauth.register(
 def callback(request):
     token = oauth.auth0.authorize_access_token(request)
     request.session["user"] = token
+    user_email = request.session["user"]["userinfo"]["email"]
+    username = request.session["user"]["userinfo"]["nickname"]
 
-    user_email = token
-    user, created = User.objects.get_or_create(email=user_email)
-    user.save()
+    user = User.objects.filter(email=user_email).first()
+    if user:
+        user.username = username
+        user.save()
+    else:
+        user = User.objects.create_user(username=username, email=user_email, is_active=True)
+
+    login(request, user)
 
     return redirect(request.build_absolute_uri(reverse("roles")))
 
 
-def login(request):
+def auth0_login(request):
     return oauth.auth0.authorize_redirect(request, request.build_absolute_uri(reverse("callback")))
 
 
@@ -131,6 +139,7 @@ def client_registration(request):
         form = ClientForm(request.POST)
         if form.is_valid():
             client = form.save(commit=False)
+            # Используем аутентифицированного пользователя
             client.user = request.user
             client.save()
             return redirect("list")
