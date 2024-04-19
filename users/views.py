@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 from django.core.mail import send_mail
 from django.core.signing import Signer, BadSignature
+from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
@@ -89,16 +90,20 @@ def callback(request):
     user_email = request.session["user"]["userinfo"]["email"]
     username = request.session["user"]["userinfo"]["nickname"]
 
-    user = User.objects.filter(email=user_email).first()
-    if user:
-        user.username = username
-        user.save()
-    else:
-        user = User.objects.create_user(username=username, email=user_email, is_active=True)
+    try:
+        user = User.objects.get(username=username)
+        login(request, user)
+        return redirect(reverse("profile"))
+    except User.DoesNotExist:
+        pass
+    except IntegrityError:
+        User.objects.get(username=username)
 
+    user = User.objects.create_user(username=username, email=user_email, is_active=True)
+    user.save()
     login(request, user)
 
-    return redirect(request.build_absolute_uri(reverse("roles")))
+    return redirect(reverse("roles"))
 
 
 def auth0_login(request):
@@ -139,7 +144,6 @@ def client_registration(request):
         form = ClientForm(request.POST)
         if form.is_valid():
             client = form.save(commit=False)
-            # Используем аутентифицированного пользователя
             client.user = request.user
             client.save()
             return redirect("list")
