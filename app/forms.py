@@ -167,6 +167,16 @@ class ClientCaseForm(forms.ModelForm):
         return article
 
 
+class LawyerCaseForm(ClientCaseForm):
+    class Meta:
+        model = Case
+        fields = ["is_active", "lawyer", "client", "case_closed_successfully", "article", "description"]
+        labels = {
+            "article": "Article",
+            "description": "Description",
+        }
+
+
 class EditLawyerForm(LawyerForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

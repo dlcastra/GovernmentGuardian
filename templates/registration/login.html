@@ -6,25 +6,25 @@
         <p>Your username and password didn't match. Please try again.</p>
     {% endif %}
 
-    {#    {% if next %}#}
-    {#        {% if user.is_authenticated %}#}
-    {#            <p>Your account doesn't have access to this page. To proceed,#}
-    {#                please login with an account that has access.</p>#}
-    {#        {% else %}#}
-    {#            <p>Please login to see this page.</p>#}
-    {#        {% endif %}#}
-    {#    {% endif %}#}
+    {% if next %}
+        {% if user.is_authenticated %}
+            <p>Your account doesn't have access to this page. To proceed,
+                please login with an account that has access.</p>
+        {% else %}
+            <p>Please login to see this page.</p>
+        {% endif %}
+    {% endif %}
 
     <form method="post" action="{% url 'login_view' %}">
         {% csrf_token %}
         {% load bootstrap5 %}
         {% bootstrap_css %}
         {% bootstrap_javascript %}
-        <section class="vh-100" style="background-color: #508bfc;">
+        <section class="vh-100">
             <div class="container py-5 h-100">
                 <div class="row d-flex justify-content-center align-items-center h-100">
                     <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                        <div class="card shadow-2-strong" style="border-radius: 1rem;">
+                        <div class="card shadow-lg" style="border-radius: 15px;">
                             <div class="card-body p-5 text-center">
 
                                 <h3 class="mb-5">Sign in</h3>

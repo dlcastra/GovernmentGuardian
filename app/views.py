@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
-from app.forms import ClientForm, ClientCaseForm, EditLawyerForm
+from app.forms import ClientForm, ClientCaseForm, EditLawyerForm, LawyerCaseForm
 from app.helpers import redirect_based_on_user_type, edit_method
 from app.models import Lawyer, Client, Case
 
@@ -46,7 +46,16 @@ def lawyer_active_cases(request):
     lawyer = get_object_or_404(Lawyer, user=user)
     cases = Case.objects.filter(lawyer=lawyer, is_active=True)
 
-    return render(request, "profiles/lawyer/cases.html", {"cases": cases})
+    if "close_case" in request.GET:
+        form = LawyerCaseForm()
+        return render(request, "profiles/lawyer/close_case.html", {"form": form})
+
+    if "close" in request.POST:
+        form = LawyerCaseForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("lawyer_active_cases")
+    return render(request, "profiles/lawyer/cases.html", {"cases": cases, "case_id": None})
 
 
 """ --- FUNCTIONS FOR CLIENT ---"""

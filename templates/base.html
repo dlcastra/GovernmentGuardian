@@ -54,18 +54,19 @@
                 <li class="nav-item {% if request.path == '/' %}active{% endif %}">
                     <a class="nav-link" href="/">Main page</a>
                 </li>
-                <li class="nav-item {% if request.path == '/get-list/' or request.path == "/active-cases/" %}active{% endif %}">
-                    {% if user_type %}
-                        <a class="nav-link" href="{% url 'navigation' %}">Your cases</a>
-                    {% else %}
-                        <a class="nav-link" href="{% url 'navigation' %}">List of lawyers</a>
-                    {% endif %}
-                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item {% if request.path == '/get-list/' or request.path == "/active-cases/" %}active{% endif %}">
+                        {% if user.user_is_lawyer  %}
+                            <a class="nav-link" href="{% url 'navigation' %}">Your cases</a>
+                        {% else %}
+                            <a class="nav-link" href="{% url 'navigation' %}">List of lawyers</a>
+                        {% endif %}
+                    </li>
 
-                <li class="nav-item {% if request.path == '/client-profile/' or request.path == "/lawyer-profile/" %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'profile' %}">Your Profile</a>
-                </li>
-
+                    <li class="nav-item {% if request.path == '/client-profile/' or request.path == "/lawyer-profile/" %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'profile' %}">Your Profile</a>
+                    </li>
+                {% endif %}
             </ul>
             <ul class="navbar-nav ms-auto">
                 {% if user.is_authenticated %}

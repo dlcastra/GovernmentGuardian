@@ -16,7 +16,13 @@
                 <li>
                     <strong>Full name:</strong> {{ case.client.name }} {{ case.client.surname }}<br>
                     <strong>Article:</strong> {{ case.article }}<br>
-                    <strong>Description:</strong> {{ case.description }}
+                    <strong>Description:</strong> {{ case.description }}<br>
+                    <form method="GET">
+                        <input type="hidden" name="close_case" value="{{ case.id }}" >
+                        <button type="submit" class="btn btn-light" style="margin-top: 10px; margin-left: 10px">
+                            Close case
+                        </button>
+                    </form>
                 </li>
             {% endfor %}
         </ul>
