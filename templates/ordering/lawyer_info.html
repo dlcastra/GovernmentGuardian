@@ -4,23 +4,56 @@
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
+    <style>
+        @media (max-width: 992px) {
+            .col-md-6 {
+                flex-basis: 100%;
+                max-width: 100%;
+            }
+        }
 
-    <h1>Lawyer info</h1>
-
-    <p>Full name: {{ lawyer.name }} {{ lawyer.surname }}</p>
-    <p>Experience: {{ lawyer.experience }}</p>
-    <p>SC: {{ lawyer.successful_cases }}</p>
-    <p>UC: {{ lawyer.unsuccessful_cases }}</p>
-    <p>Price: {{ lawyer.price }}</p>
-    <p>Characterization: {{ lawyer.characterization }}</p>
-
-    <form method="GET">
-        {% csrf_token %}
-        <input type="submit"
-               class="btn btn-primary"
-               value="Retain a lawyer"
-               name="retain"
-        >
-    </form>
-
+    </style>
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-sm" style="border-radius: 15px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Full name</h5>
+                        <p class="card-text">{{ lawyer.name }} {{ lawyer.surname }}</p>
+                        <h5 class="card-title">Experience</h5>
+                        <p class="card-text">{{ lawyer.experience }}</p>
+                        <h5 class="card-title">Price</h5>
+                        <p class="card-text">{{ lawyer.price }}</p>
+                    </div>
+                </div>
+                <div class="card shadow-sm" style="border-radius: 15px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Successful cases</h5>
+                        <p class="card-text">{{ lawyer.successful_cases }}</p>
+                        <h5 class="card-title">Unsuccessful cases</h5>
+                        <p class="card-text">{{ lawyer.unsuccessful_cases }}</p>
+                    </div>
+                </div>
+                <br>
+                <form method="GET">
+                    {% csrf_token %}
+                    <input type="submit"
+                           class="btn btn-primary align-self-end"
+                           value="Retain a lawyer"
+                           name="retain"
+                    >
+                </form>
+                <br>
+            </div>
+            <div class="col-md-6 d-flex flex-column justify-content-between">
+                <div class="card mb-4 shadow-sm" style="border-radius: 15px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Characterization</h5>
+                        <p class="card-text">{{ lawyer.characterization }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

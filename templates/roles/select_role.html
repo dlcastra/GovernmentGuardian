@@ -1,23 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Select Role</title>
-</head>
-<body>
-    <h2>Select Your Role</h2>
-    <form method="post">
-        {% csrf_token %}
-        <label>
-            <input type="radio" name="role" value="client" required>
-            Client
-        </label><br>
-        <label>
-            <input type="radio" name="role" value="lawyer" required>
-            Lawyer
-        </label><br>
-        <button type="submit">Continue</button>
-    </form>
-</body>
-</html>
+{% block content %}
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <style>
+        body {
+            margin-top: 20px;
+            color: #1a202c;
+            text-align: left;
+            background-color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+
+        .card {
+            box-shadow: 0 3px 10px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
+            width: 70%;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        .radio-group {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .radio-group label {
+            margin-right: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+        }
+
+    </style>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h1>Select Your Role</h1>
+                        <br>
+                        <form method="post">
+                            {% csrf_token %}
+                            <label>
+                                <input type="radio" name="role" value="client" required>
+                                Client
+                            </label><br>
+                            <label>
+                                <input type="radio" name="role" value="lawyer" required>
+                                Lawyer
+                            </label><br>
+                            <button type="submit">Continue</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
