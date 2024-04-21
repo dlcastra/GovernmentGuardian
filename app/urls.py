@@ -14,6 +14,7 @@ urlpatterns = [
     path("edit-lawyer-profile/", views.edit_lawyer_profile, name="edit_lawyer"),
     path("edit-client-profile/", views.edit_client_profile, name="edit_client"),
     path("active-cases/", views.lawyer_active_cases, name="lawyer_active_cases"),
+    path("close-case/<int:case_id>", views.close_case, name="close_case"),
     # Navigation panel
     path("who-is-user/", helpers.get_user_type, name="who_is_user"),
     path("profile/", views.profile, name="profile"),

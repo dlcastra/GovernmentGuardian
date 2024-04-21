@@ -47,15 +47,24 @@ def lawyer_active_cases(request):
     cases = Case.objects.filter(lawyer=lawyer, is_active=True)
 
     if "close_case" in request.GET:
-        form = LawyerCaseForm()
+        case_id = request.GET.get("close_case")
+        return redirect("close_case", case_id=case_id)
+
+    return render(request, "profiles/lawyer/cases.html", {"cases": cases})
+
+
+def close_case(request, case_id):
+    case = get_object_or_404(Case, pk=case_id)
+    if request.method == "GET":
+        form = LawyerCaseForm(instance=case)
         return render(request, "profiles/lawyer/close_case.html", {"form": form})
 
-    if "close" in request.POST:
-        form = LawyerCaseForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("lawyer_active_cases")
-    return render(request, "profiles/lawyer/cases.html", {"cases": cases, "case_id": None})
+    form = LawyerCaseForm(request.POST, instance=case)
+    if form.is_valid():
+        form.save()
+        return redirect("lawyer_active_cases")
+
+    return render(request, "profiles/lawyer/close_case.html", {"form": form})
 
 
 """ --- FUNCTIONS FOR CLIENT ---"""
