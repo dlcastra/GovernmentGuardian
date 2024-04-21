@@ -55,16 +55,10 @@ def lawyer_active_cases(request):
 
 def close_case(request, case_id):
     case = get_object_or_404(Case, pk=case_id)
-    if request.method == "GET":
-        form = LawyerCaseForm(instance=case)
-        return render(request, "profiles/lawyer/close_case.html", {"form": form})
+    instance = LawyerCaseForm(instance=case)
+    post_instance = LawyerCaseForm(request.POST, instance=case)
 
-    form = LawyerCaseForm(request.POST, instance=case)
-    if form.is_valid():
-        form.save()
-        return redirect("lawyer_active_cases")
-
-    return render(request, "profiles/lawyer/close_case.html", {"form": form})
+    return edit_method(request, case, instance, post_instance, "profiles/lawyer/close_case.html", "lawyer_active_cases")
 
 
 """ --- FUNCTIONS FOR CLIENT ---"""
