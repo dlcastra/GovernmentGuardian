@@ -88,14 +88,14 @@ def retain_lawyer(request, lawyer_id):
     lawyer = get_object_or_404(Lawyer, pk=lawyer_id)
     case = Case.objects.filter(client=client, is_active=True)
     feedback = Feedback.objects.filter(lawyer=lawyer)
-    feedback_handler(request, lawyer)
+    feedback_handler(request, lawyer, client)
     csrf_token = get_token(request)
     feedback_context = {"lawyer": lawyer, "feedback": feedback,
                         "case": Case.objects.filter(lawyer=lawyer,
                                                     is_active=False,
                                                     case_closed_successfully=True), "csrf_toke": csrf_token}
     feedback_html = render_to_string("ordering/feedback_section.html", context=feedback_context)
-    get_info_context = {"lawyer": lawyer, "feedback": feedback, "case": Case.objects.filter(lawyer=lawyer).get(),
+    get_info_context = {"lawyer": lawyer, "feedback": feedback, "case": Case.objects.filter(lawyer=lawyer),
                         "client": client, }
     if "get_info" in request.GET:
         get_info_context["feedback_html"] = feedback_html
@@ -155,8 +155,8 @@ def custom_404(request, exception=None):
 """ --- FEEDBACK --- """
 
 
-def feedback_handler(request, lawyer):
-    case = Case.objects.get(lawyer=lawyer)
+def feedback_handler(request, lawyer, client):
+    case = Case.objects.filter(lawyer=lawyer, client=client)
     content = request.POST.get("feedback")
     if request.method == "POST":
-        Feedback.objects.create(client=case.client, lawyer=case.lawyer, case=case, text=content, title=case.article)
+        Feedback.objects.create(client=case.get.client, lawyer=case.get.lawyer, case=case, text=content, title=case.article)
