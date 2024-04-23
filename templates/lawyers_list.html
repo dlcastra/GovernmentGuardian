@@ -20,7 +20,6 @@
             height: 400px;
         }
 
-
         .card {
             position: relative;
             display: flex;
@@ -31,13 +30,12 @@
             background-clip: border-box;
             border: 0 solid rgba(0, 0, 0, .125);
             border-radius: .25rem;
-
         }
 
         .card-body {
             flex: 1;
         }
-        
+
         .mb-3 {
             margin-bottom: 1rem !important;
         }
@@ -45,6 +43,11 @@
         .row.gutters-sm > {
             margin-bottom: 20px;
             display: flex;
+        }
+
+        .lawyer-rating {
+            padding: 20px;
+            font-size: 22px;
         }
 
     </style>
@@ -58,15 +61,29 @@
             <div class="row justify-content-center text-center" style="padding: 20px">
                 {% for lawyer in lawyers %}
                     <div class="col-md-8 mb-3">
-                        <div class="card mb-3">
+                        <div class="card mb-3" style="border-radius: 15px;">
                             <div class="card-body" style="text-align: left">
                                 <div class="row">
-                                    <div class="col-sm-2">
-                                        <h6 class="mb-0">ID:</h6>
+                                    <div class="col-sm-2 lawyer-rating">
+                                         Rating:
                                     </div>
-                                    <div class="col-sm-2 text-secondary">
-                                        {{ lawyer.id }}
+                                    <div class="col-sm-2 lawyer-rating">
+                                        <span class="lawyer-rating-value-{{ lawyer.id }}"></span>
                                     </div>
+                                    <script>
+                                        $(document).ready(function () {
+                                            function calculateRating(id) {
+                                                const successfulCases = parseFloat({{ lawyer.successful_cases }});
+                                                const unsuccessfulCases = parseFloat({{ lawyer.unsuccessful_cases }});
+                                                const experience = parseFloat({{ lawyer.experience }});
+
+                                                const rating = (successfulCases - unsuccessfulCases) * Math.sqrt(1 + experience);
+                                                $('.lawyer-rating-value-' + id).text(rating.toFixed(2));
+                                            }
+
+                                            calculateRating({{ lawyer.id }});
+                                        });
+                                    </script>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-2">
@@ -94,7 +111,7 @@
                                         {{ lawyer.price }}
                                     </div>
                                 </div>
-
+                                <br>
                                 <form method="get">
                                     {% csrf_token %}
                                     <input type="submit" formaction="{% url 'lawyer_info' lawyer.id %}"
@@ -110,6 +127,5 @@
             </div>
         </div>
     </div>
-
 
 {% endblock %}
