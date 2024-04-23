@@ -90,13 +90,20 @@ def retain_lawyer(request, lawyer_id):
     feedback = Feedback.objects.filter(lawyer=lawyer)
     feedback_handler(request, lawyer, client)
     csrf_token = get_token(request)
-    feedback_context = {"lawyer": lawyer, "feedback": feedback,
-                        "case": Case.objects.filter(lawyer=lawyer,
-                                                    is_active=False,
-                                                    case_closed_successfully=True), "csrf_toke": csrf_token}
+    feedback_context = {
+        "lawyer": lawyer,
+        "feedback": feedback,
+        "case": Case.objects.filter(lawyer=lawyer, is_active=False, case_closed_successfully=True),
+        "csrf_toke": csrf_token,
+    }
+
     feedback_html = render_to_string("ordering/feedback_section.html", context=feedback_context)
-    get_info_context = {"lawyer": lawyer, "feedback": feedback, "case": Case.objects.filter(lawyer=lawyer),
-                        "client": client, }
+    get_info_context = {
+        "lawyer": lawyer,
+        "feedback": feedback,
+        "case": Case.objects.filter(lawyer=lawyer),
+        "client": client,
+    }
     if "get_info" in request.GET:
         get_info_context["feedback_html"] = feedback_html
         return render(request, "ordering/lawyer_info.html", context=get_info_context)
@@ -159,4 +166,6 @@ def feedback_handler(request, lawyer, client):
     case = Case.objects.filter(lawyer=lawyer, client=client)
     content = request.POST.get("feedback")
     if request.method == "POST":
-        Feedback.objects.create(client=case.get.client, lawyer=case.get.lawyer, case=case, text=content, title=case.article)
+        Feedback.objects.create(
+            client=case.get.client, lawyer=case.get.lawyer, case=case, text=content, title=case.article
+        )

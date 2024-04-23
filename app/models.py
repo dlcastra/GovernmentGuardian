@@ -47,4 +47,3 @@ class Case(models.Model):
     case_closed_successfully = models.BooleanField(default=False)
     article = models.CharField(max_length=255)
     description = models.TextField()
-
