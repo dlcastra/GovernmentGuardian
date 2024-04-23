@@ -5,7 +5,8 @@ from app.models import Client, Lawyer, Case
 
 
 class ClientForm(forms.ModelForm):
-    birthdate = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    birthdate = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
+
     class Meta:
         model = Client
         fields = ["name", "surname", "birthdate", "phone", "email"]
@@ -71,7 +72,8 @@ class ClientForm(forms.ModelForm):
 
 
 class LawyerForm(forms.ModelForm):
-    birthdate = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    birthdate = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
+
     class Meta:
         model = Lawyer
         fields = [

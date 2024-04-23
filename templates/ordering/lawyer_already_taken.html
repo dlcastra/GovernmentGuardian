@@ -1,11 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <h1>Sorry</h1>
-</head>
-<body>
-
-</body>
-</html>
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    {% csrf_token %}
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <section class="vh-100">
+        <div class="container py-3 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card shadow-lg" style="border-radius: 15px;">
+                        <div class="card-body p-3 text-center">
+                            <img src="{% static 'admin/img/icon-alert.svg' %}" alt=""
+                                 style="width: 50px; height: 50px; margin-bottom: 10px">
+                            <h3>Sorry, but you can't hire another lawyer until your current lawyer closes the case.</h3>
+                            <br>
+                            <button type="button" onclick="window.location.href='{% url 'list' %}'"
+                                    class="btn btn-primary"
+                                    style="margin-top: 10px; margin-left: 10px">
+                                Back
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

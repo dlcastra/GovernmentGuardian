@@ -12,6 +12,41 @@
             }
         }
 
+        .scrollable-text {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-left: 10px;
+            margin-right: 10px;
+            max-height: 420px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        
+        .scrollable-text::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .scrollable-text::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+        }
+
+        .scrollable-text::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .scrollable-text::-webkit-scrollbar-track {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .scrollable-text::-webkit-scrollbar-thumb {
+            margin-right: 2px;
+        }
+
+
     </style>
     <br>
     <div class="container">
@@ -47,8 +82,8 @@
                 <br>
             </div>
             <div class="col-md-6 d-flex flex-column justify-content-between">
-                <div class="card mb-4 shadow-sm" style="border-radius: 15px;">
-                    <div class="card-body">
+                <div class="card mb-4 shadow-sm" style="border-radius: 15px; height: 420px">
+                    <div class="card-body scrollable-text">
                         <h5 class="card-title">Characterization</h5>
                         <p class="card-text">{{ lawyer.characterization }}</p>
                     </div>
