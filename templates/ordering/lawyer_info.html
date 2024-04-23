@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
     {% load bootstrap5 %}
     {% bootstrap_css %}
@@ -13,6 +13,35 @@
         }
 
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://malsup.github.io/jquery.form.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#feedbackForm').submit(function (event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+                formData += '&csrfmiddlewaretoken={{ csrf_token }}';
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).attr('action'),
+                    data: formData,
+                    success: function (response) {
+                        var newComment = $(response.feedback_html).find("#new-comment-id"); // Adjust selector for your new comment element
+                        if (newComment.length > 0) {
+                            $('#feedback-container').prepend(newComment); // Prepend the new comment to the top (or adjust based on desired placement)
+                        } else {
+                            console.error("Failed to find new comment element"); // Handle potential errors
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+        });
+    </script>
+
+
     <br>
     <div class="container">
         <div class="row">
@@ -44,7 +73,14 @@
                            name="retain"
                     >
                 </form>
-                <br>
+                <form id="feedbackForm" method="POST">
+
+                    <div id="feedback-container">
+                        {% csrf_token %}
+                        {% include 'ordering/feedback_section.html' %}
+                    </div>
+                    <br>
+                </form>
             </div>
             <div class="col-md-6 d-flex flex-column justify-content-between">
                 <div class="card mb-4 shadow-sm" style="border-radius: 15px;">

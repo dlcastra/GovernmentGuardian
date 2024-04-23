@@ -29,6 +29,17 @@ class Lawyer(models.Model):
         return f"ID: {self.id} | Lawyer: {self.name} {self.surname}"
 
 
+class Feedback(models.Model):
+    client = models.ForeignKey("Client", on_delete=models.CASCADE, related_name="feedback")
+    lawyer = models.ForeignKey("Lawyer", on_delete=models.CASCADE, related_name="feedback")
+    case = models.ForeignKey("Case", on_delete=models.CASCADE, related_name="feedback")
+    title = models.CharField(max_length=255)
+    text = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.title
+
+
 class Case(models.Model):
     is_active = models.BooleanField(default=True)
     lawyer = models.ForeignKey(Lawyer, on_delete=models.CASCADE, related_name="lawyer_cases")
@@ -36,3 +47,4 @@ class Case(models.Model):
     case_closed_successfully = models.BooleanField(default=False)
     article = models.CharField(max_length=255)
     description = models.TextField()
+

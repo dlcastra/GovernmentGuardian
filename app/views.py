@@ -1,8 +1,11 @@
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
 
 from app.forms import ClientForm, ClientCaseForm, EditLawyerForm, LawyerCaseForm
 from app.helpers import redirect_based_on_user_type, edit_method
-from app.models import Lawyer, Client, Case
+from app.models import Lawyer, Client, Case, Feedback
 
 """ --- HOME PAGE --- """
 
@@ -84,15 +87,27 @@ def retain_lawyer(request, lawyer_id):
     client = Client.objects.get(user=request.user)
     lawyer = get_object_or_404(Lawyer, pk=lawyer_id)
     case = Case.objects.filter(client=client, is_active=True)
-
+    feedback = Feedback.objects.filter(lawyer=lawyer)
+    feedback_handler(request, lawyer)
+    csrf_token = get_token(request)
+    feedback_context = {"lawyer": lawyer, "feedback": feedback,
+                        "case": Case.objects.filter(lawyer=lawyer,
+                                                    is_active=False,
+                                                    case_closed_successfully=True), "csrf_toke": csrf_token}
+    feedback_html = render_to_string("ordering/feedback_section.html", context=feedback_context)
+    get_info_context = {"lawyer": lawyer, "feedback": feedback, "case": Case.objects.filter(lawyer=lawyer).get(),
+                        "client": client, }
     if "get_info" in request.GET:
-        return render(request, "ordering/lawyer_info.html", {"lawyer": lawyer})
+        get_info_context["feedback_html"] = feedback_html
+        return render(request, "ordering/lawyer_info.html", context=get_info_context)
 
     elif "retain" in request.GET and case.exists():
         return redirect("lawyer_already_taken")
 
     elif "retain" in request.GET:
         return redirect("create_case", lawyer_id)
+    if request.method == "POST":
+        return JsonResponse(feedback_html, safe=False)
 
     return render(request, "ordering/lawyer_info.html", {"lawyer": lawyer})
 
@@ -135,3 +150,13 @@ def navigation_user_info(request):
 
 def custom_404(request, exception=None):
     return render(request, "errors/404.html")
+
+
+""" --- FEEDBACK --- """
+
+
+def feedback_handler(request, lawyer):
+    case = Case.objects.get(lawyer=lawyer)
+    content = request.POST.get("feedback")
+    if request.method == "POST":
+        Feedback.objects.create(client=case.client, lawyer=case.lawyer, case=case, text=content, title=case.article)

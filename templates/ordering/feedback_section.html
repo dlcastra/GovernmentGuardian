@@ -1,0 +1,31 @@
+
+{#{% if case.client == client%}#}
+<textarea name="feedback" id="feedback-input" placeholder="Add feedback here" maxlength="268"
+          style="width: 1000px; height: 100px; vertical-align: top; resize: none"></textarea><br>
+<br>
+<input type="submit" value="Submit">
+{#{% endif %}#}
+<div id="feedback-container">
+    {% if feedback %}
+        {% for feedback in feedback %}
+            <div class="feedback">
+                {{ feedback.title }}<br>
+                {{ feedback.client.name }}<br>
+
+                {{ feedback.text }}
+{#                {% if user.id == comment.user.id %}#}
+{#                    <h1 hidden="hidden" class="user-id">{{ user.id }}</h1>#}
+{#                    <h1 hidden="hidden" class="comment-id">{{ comment.id }}</h1>#}
+{#                    <button class="remove-comment-btn" type="button" data-video-id="{{ comment.video_id }}">Remove#}
+{#                        comment#}
+{#                    </button>#}
+{#                {% endif %}#}
+                <br>
+            </div>
+        {% endfor %}
+
+
+    {% else %}
+        There are no comments yet.<br>
+    {% endif %}
+</div>
