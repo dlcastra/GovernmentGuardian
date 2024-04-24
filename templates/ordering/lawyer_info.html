@@ -22,7 +22,7 @@
             padding-right: 10px;
         }
 
-        
+
         .scrollable-text::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -100,6 +100,7 @@
                     </div>
                 </div>
                 <br>
+                
                 <form method="GET">
                     {% csrf_token %}
                     <input type="submit"
@@ -108,14 +109,15 @@
                            name="retain"
                     >
                 </form>
+                <br>
                 <form id="feedbackForm" method="POST">
-
                     <div id="feedback-container">
                         {% csrf_token %}
                         {% include 'ordering/feedback_section.html' %}
                     </div>
                     <br>
                 </form>
+                
             </div>
             <div class="col-md-6 d-flex flex-column justify-content-between">
                 <div class="card mb-4 shadow-sm" style="border-radius: 15px; height: 420px">
