@@ -59,7 +59,7 @@ def lawyer_active_cases(request):
 def close_case(request, case_id):
     case = get_object_or_404(Case, pk=case_id)
     instance = LawyerCaseForm(instance=case)
-    post_instance = LawyerCaseForm(request.POST, instance=case)
+    post_instance = LawyerCaseForm(request.POST, request.FILES, instance=case)
 
     return edit_method(request, case, instance, post_instance, "profiles/lawyer/close_case.html", "lawyer_active_cases")
 
@@ -78,7 +78,7 @@ def client_profile(request):
 def edit_client_profile(request):
     client = get_object_or_404(Client, user=request.user)
     get_instance = ClientForm(instance=client)
-    post_instance = ClientForm(request.POST, instance=client)
+    post_instance = ClientForm(request.POST, request.FILES, instance=client)
 
     return edit_method(request, client, get_instance, post_instance, "profiles/edit_profile.html", "client_profile")
 

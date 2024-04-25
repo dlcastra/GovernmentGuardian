@@ -159,7 +159,7 @@ def lawyer_registration(request):
             lawyer = form.save(commit=False)
             lawyer.user = request.user
             lawyer.save()
-            return redirect("list")
+            return redirect("profile")
     else:
         form = LawyerForm()
     return render(request, "roles/lawyer_registration.html", {"form": form})

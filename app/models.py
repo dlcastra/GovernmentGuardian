@@ -1,5 +1,9 @@
+import os
+
 from django.contrib.auth.models import User
 from django.db import models
+
+from core import settings
 
 
 class Client(models.Model):
@@ -8,7 +12,13 @@ class Client(models.Model):
     birthdate = models.DateField()
     phone = models.CharField(max_length=20, blank=True)
     email = models.EmailField(max_length=255)
+    image = models.ImageField(upload_to="images/", blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_is_client")
+
+    def save(self, *args, **kwargs):
+        if not self.image:
+            self.image = os.path.join(settings.STATIC_URL, "default", "no_image.jpg")
+        super(Client, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"ID: {self.id} | Client: {self.name} {self.surname}"
@@ -23,7 +33,13 @@ class Lawyer(models.Model):
     unsuccessful_cases = models.PositiveIntegerField(default=0)
     price = models.PositiveIntegerField()
     characterization = models.TextField()
+    image = models.ImageField(upload_to="images/", blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_is_lawyer")
+
+    def save(self, *args, **kwargs):
+        if not self.image:
+            self.image = os.path.join(settings.STATIC_URL, "default", "no_image.jpg")
+        super(Lawyer, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"ID: {self.id} | Lawyer: {self.name} {self.surname}"

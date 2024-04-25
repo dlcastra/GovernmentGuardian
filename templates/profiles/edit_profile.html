@@ -33,6 +33,7 @@
         align-items: center;
     }
 </style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 {% block content %}
     <br>
     <div class="container">
@@ -41,7 +42,7 @@
                 <div class="card mb-4 shadow-lg">
                     <div class="card-body">
                         <h1 class="card-title text-center">Edit Profile</h1>
-                        <form method="post">
+                        <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             {% bootstrap_form form %}
                             <input type="submit" class="btn btn-primary btn-block" value="Save"

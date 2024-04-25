@@ -29,10 +29,14 @@ def edit_method(request, obj, form_instance, post_form_instance, render_template
         form = form_instance
         return render(request, render_template, {"form": form})
 
-    if request.method == "POST":
-        form = post_form_instance
-        if form.is_valid():
-            form.save()
-            return redirect(redirect_url)
+    form = post_form_instance
+    if form.is_valid():
+        instance = form.save(commit=False)
+        if "image" in request.FILES:
+            instance.image = request.FILES["image"]
+
+        instance.save()
+        form.save()
+        return redirect(redirect_url)
 
     return render(request, render_template, {"form": obj})

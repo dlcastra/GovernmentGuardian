@@ -32,7 +32,7 @@
             background-clip: border-box;
             border: 0 solid rgba(0, 0, 0, .125);
             border-radius: .25rem;
-            min-height: 414px;
+            min-height: 380px;
             height: auto;
         }
 
@@ -58,6 +58,13 @@
             margin-bottom: 20px;
             display: flex;
         }
+        
+        .custom-img {
+            width: auto;
+            height: auto;
+            max-width: 240px;
+            max-height: 300px;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     {% load bootstrap5 %}
@@ -71,9 +78,8 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex flex-column align-items-center text-center">
-                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin"
-                                     class="rounded-circle" width="150">
-                                <div id="rating" style="padding: 70px; font-size: 22px"></div>
+                                <img src="{{ lawyer.image.url }}" alt="NO" class="custom-img">
+                                <div id="rating" style="padding: 10px; font-size: 22px"></div>
                                 <script>
                                     $(document).ready(function () {
                                         function calculateRating() {
@@ -99,10 +105,6 @@
                                          aria-valuenow="{{ lawyer.unsuccessful_cases }}"
                                          aria-valuemin="0" aria-valuemax="100">{{ lawyer.unsuccessful_cases }}</div>
                                 </div>
-{#                                <script src="{% static 'admin/js/jquery.init.js' %}"></script>#}
-{#                                <div>#}
-{#                                    <img src="{% static 'admin/img/icon-alert.svg' %}" alt="GG">#}
-{#                                </div>#}
                             </div>
                         </div>
                     </div>

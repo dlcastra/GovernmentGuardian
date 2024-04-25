@@ -87,7 +87,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "postgres",
         "USER": "postgres",
-        "PASSWORD": "postgres",
+        "PASSWORD": "password",
         "HOST": "127.0.0.1",
         "PORT": "5432",
     }
@@ -161,4 +161,4 @@ DEFAULT_FROM_EMAIL = f"Celery <{EMAIL_HOST_USER}>"
 
 # Media files
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")

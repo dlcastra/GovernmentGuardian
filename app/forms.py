@@ -9,8 +9,15 @@ class ClientForm(forms.ModelForm):
 
     class Meta:
         model = Client
-        fields = ["name", "surname", "birthdate", "phone", "email"]
-        labels = {"name": "Name", "surname": "Surname", "Birthdate": "Birthdate", "phone": "Phone", "email": "Email"}
+        fields = ["image", "name", "surname", "birthdate", "phone", "email"]
+        labels = {
+            "image": "Your photo",
+            "name": "Name",
+            "surname": "Surname",
+            "Birthdate": "Birthdate",
+            "phone": "Phone",
+            "email": "Email",
+        }
 
     def clean_name(self):
         client_name = self.cleaned_data["name"]
@@ -77,6 +84,7 @@ class LawyerForm(forms.ModelForm):
     class Meta:
         model = Lawyer
         fields = [
+            "image",
             "name",
             "surname",
             "birthdate",
@@ -87,6 +95,7 @@ class LawyerForm(forms.ModelForm):
             "characterization",
         ]
         labels = {
+            "image": "Your photo",
             "name": "Name",
             "surname": "Surname",
             "birthdate": "Birthday",
@@ -179,6 +188,13 @@ class LawyerCaseForm(ClientCaseForm):
             "article": "Article",
             "description": "Description",
         }
+
+    def clean_article(self):
+        article = self.cleaned_data["article"]
+        if len(article) > 255:
+            raise forms.ValidationError("Article is too long")
+
+        return article
 
 
 class EditLawyerForm(LawyerForm):
