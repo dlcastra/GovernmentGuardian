@@ -32,8 +32,9 @@
             background-clip: border-box;
             border: 0 solid rgba(0, 0, 0, .125);
             border-radius: .25rem;
-            min-height: 380px;
+            min-height: 410px;
             height: auto;
+            max-height: 800px;
         }
 
         .card-body {
@@ -58,12 +59,45 @@
             margin-bottom: 20px;
             display: flex;
         }
-        
+
         .custom-img {
             width: auto;
             height: auto;
-            max-width: 240px;
+            max-width: 100%;
             max-height: 300px;
+        }
+        .scrollable-text {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-left: 10px;
+            margin-right: 10px;
+            max-height: 420px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+
+        .scrollable-text::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .scrollable-text::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+        }
+
+        .scrollable-text::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .scrollable-text::-webkit-scrollbar-track {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .scrollable-text::-webkit-scrollbar-thumb {
+            margin-right: 2px;
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -78,7 +112,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex flex-column align-items-center text-center">
-                                <img src="{{ lawyer.image.url }}" alt="NO" class="custom-img">
+                                <img src="{{ lawyer.image.url }}" alt="NO" class="d-flex flex-column custom-img">
                                 <div id="rating" style="padding: 10px; font-size: 22px"></div>
                                 <script>
                                     $(document).ready(function () {
@@ -95,7 +129,7 @@
                                         setInterval(calculateRating, 1000);
                                     });
                                 </script>
-                                <div class="progress" style="width: 100%; margin-bottom: 40px">
+                                <div class="progress" style="width: 100%; margin-bottom: 5px">
                                     <div class="progress-bar bg-success" role="progressbar"
                                          style="width: {{ success_percentage }}%;"
                                          aria-valuenow="{{ lawyer.successful_cases }}"
@@ -179,18 +213,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8 mb-3" style="text-align: left; width: auto; height: auto">
-                    <div class="card mb-3" style="padding: 10px;">
+                <div class="col-md-8 mb-3" style="text-align: left; height: auto; width: auto">
+                    <div class="card mb-3 scrollable-text"
+                         style="padding: 10px; max-height: 300px; overflow-y: auto; overflow-x: hidden;">
                         <div class="row">
                             <div>
                                 <h6 class="mb-0">Characterization:</h6>
                             </div>
-                            <div class="col-sm-9 text-secondary" style="width: auto; min-width: 1200px">
+                            <div class="col-sm-12 text-secondary" style="max-width: 100%;">
                                 {{ lawyer.characterization }}
                             </div>
                         </div>
                     </div>
                 </div>
+
 
             </div>
         </div>

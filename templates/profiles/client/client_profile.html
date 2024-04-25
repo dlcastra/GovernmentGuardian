@@ -31,10 +31,10 @@
             background-color: #fff;
             background-clip: border-box;
             border: 0 solid rgba(0, 0, 0, .125);
-            border-radius: 15px;
-            min-height: 335px;
+            border-radius: .25rem;
+            min-height: 350px;
             height: auto;
-
+            max-height: 800px;
         }
 
         .card-body {
@@ -63,7 +63,7 @@
         .custom-img {
             width: auto;
             height: auto;
-            max-width: 240px;
+            max-width: 100%;
             max-height: 300px;
         }
     </style>
@@ -79,17 +79,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex flex-column align-items-center text-center">
-                                {#                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin"#}
-                                {#                                     class="rounded-circle" width="150">#}
                                 <img src="{{ client.image.url }}" alt="NO" class="custom-img">
-                                <div class="mt-3" style="padding: 5px">
-                                    {% if client.client_lawyer.exists and case %}
-                                        <h4>Your
-                                            lawyer: {{ client.client_lawyer.last.lawyer.name }} {{ client.client_lawyer.last.lawyer.surname }}</h4>
-                                    {% else %}
-                                        <h4>You don't have a lawyer assigned yet.</h4>
-                                    {% endif %}
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -134,6 +124,18 @@
                             </div>
                             <hr>
                             <div class="row">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">Your lawyer:</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    {% if client.client_lawyer.exists and case %}
+                                        <h5>{{ client.client_lawyer.last.lawyer.name }} {{ client.client_lawyer.last.lawyer.surname }}</h5>
+                                    {% else %}
+                                        <h5>You don't have a lawyer assigned yet.</h5>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 5px">
                                 <div class="col-sm-12">
                                     <form method="get">
                                         {% csrf_token %}
