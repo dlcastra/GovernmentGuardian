@@ -25,7 +25,7 @@ def redirect_based_on_user_type(request, redirect_if_lawyer, redirect_if_client)
         return redirect(redirect_if_client)
 
 
-def edit_method(request, obj, form_instance, post_form_instance, render_template, redirect_url):
+def edit_method(request, form_instance, post_form_instance, render_template, redirect_url):
     if request.method == "GET":
         form = form_instance
         return render(request, render_template, {"form": form})
@@ -40,11 +40,8 @@ def edit_method(request, obj, form_instance, post_form_instance, render_template
         form.save()
         return redirect(redirect_url)
 
-    return render(request, render_template, {"form": obj})
-
 
 def get_feedback_data(request, lawyer, has_case_with_lawyer, feedback):
-
     feedback_context = {
         "lawyer": lawyer,
         "feedback": feedback,
@@ -52,7 +49,3 @@ def get_feedback_data(request, lawyer, has_case_with_lawyer, feedback):
         "has_case_with_lawyer": has_case_with_lawyer,
     }
     return feedback_context
-
-
-
-

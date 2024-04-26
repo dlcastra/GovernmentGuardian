@@ -2,86 +2,123 @@ from django.http import JsonResponse, HttpResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
+from django.views import View
 from django.views.decorators.http import require_POST
+from django.views.generic import TemplateView
 
 from app.forms import ClientForm, ClientCaseForm, EditLawyerForm, LawyerCaseForm
-from app.helpers import redirect_based_on_user_type, edit_method, get_feedback_data
+from app.helpers import redirect_based_on_user_type, get_feedback_data
+from app.mixins import EditObjectMixin
 from app.models import Lawyer, Client, Case, Feedback
 
 """ --- HOME PAGE --- """
 
 
-def greeting_page(request):
-    return render(request, "greeting_page.html")
-
-
-def lawyers_list(request):
-    lawyers = Lawyer.objects.all()
-    return render(request, "lawyers_list.html", {"lawyers": lawyers})
+class GreetingPageView(TemplateView):
+    template_name = "greeting_page.html"
 
 
 """ --- FUNCTIONS FOR LAWYER --- """
 
 
-def lawyer_profile(request):
-    user = request.user
-    lawyer = Lawyer.objects.get(user=user)
-    total_cases = lawyer.successful_cases + lawyer.unsuccessful_cases
-    success_percentage = (lawyer.successful_cases / total_cases) * 100
-    failure_percentage = (lawyer.unsuccessful_cases / total_cases) * 100
-    context = {
-        "lawyer": lawyer,
-        "success_percentage": success_percentage,
-        "failure_percentage": failure_percentage,
-    }
-    return render(request, "profiles/lawyer/lawyer_profile.html", context)
+class LawyerProfileView(View):
+    template_name = "profiles/lawyer/lawyer_profile.html"
+
+    @staticmethod
+    def get_context_data(request):
+        user = request.user
+        lawyer = Lawyer.objects.get(user=user)
+        total_cases = lawyer.successful_cases + lawyer.unsuccessful_cases
+        success_percentage = (lawyer.successful_cases / total_cases) * 100
+        failure_percentage = (lawyer.unsuccessful_cases / total_cases) * 100
+        context = {
+            "lawyer": lawyer,
+            "success_percentage": success_percentage,
+            "failure_percentage": failure_percentage,
+        }
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(request)
+        template = self.template_name
+        return render(request, template, context)
 
 
-def edit_lawyer_profile(request):
-    lawyer = get_object_or_404(Lawyer, user=request.user)
-    get_instance = EditLawyerForm(instance=lawyer)
-    post_instance = EditLawyerForm(request.POST, instance=lawyer)
+class EditLawyerProfileView(EditObjectMixin, View):
+    form_instance_class = EditLawyerForm
+    success_url = "lawyer_profile"
 
-    return edit_method(request, lawyer, get_instance, post_instance, "profiles/edit_profile.html", "lawyer_profile")
-
-
-def lawyer_active_cases(request):
-    user = request.user
-    lawyer = get_object_or_404(Lawyer, user=user)
-    cases = Case.objects.filter(lawyer=lawyer, is_active=True)
-
-    if "close_case" in request.GET:
-        case_id = request.GET.get("close_case")
-        return redirect("close_case", case_id=case_id)
-
-    return render(request, "profiles/lawyer/cases.html", {"cases": cases})
+    def get_object(self):
+        return get_object_or_404(Lawyer, user=self.request.user)
 
 
-def close_case(request, case_id):
-    case = get_object_or_404(Case, pk=case_id)
-    instance = LawyerCaseForm(instance=case)
-    post_instance = LawyerCaseForm(request.POST, request.FILES, instance=case)
+class LawyerActiveCasesView(View):
+    template_name = "profiles/lawyer/cases.html"
 
-    return edit_method(request, case, instance, post_instance, "profiles/lawyer/close_case.html", "lawyer_active_cases")
+    @staticmethod
+    def get_context_data(request):
+        user = request.user
+        lawyer = get_object_or_404(Lawyer, user=user)
+        cases = Case.objects.filter(lawyer=lawyer, is_active=True)
+
+        return cases
+
+    def get(self, request, *args, **kwargs):
+        template = self.template_name
+        context = self.get_context_data(request)
+
+        if "close_case" in request.GET:
+            case_id = request.GET.get("close_case")
+            return redirect("close_case", case_id=case_id)
+
+        return render(request, template, {"cases": context})
+
+
+class CloseCaseView(EditObjectMixin, View):
+    template_name = "profiles/lawyer/close_case.html"
+    form_instance_class = LawyerCaseForm
+    success_url = "lawyer_active_cases"
+
+    def get_object(self):
+        return get_object_or_404(Case, pk=self.kwargs["case_id"])
 
 
 """ --- FUNCTIONS FOR CLIENT ---"""
 
 
-def client_profile(request):
-    user = request.user
-    client = Client.objects.get(user=user)
-    case = Case.objects.filter(client=client, is_active=True)
-    context = {"client": client, "case": case}
-    return render(request, "profiles/client/client_profile.html", context)
+class ClientProfileView(View):
+    template_name = "profiles/client/client_profile.html"
+
+    @staticmethod
+    def get_context_data(request):
+        user = request.user
+        client = Client.objects.get(user=user)
+        case = Case.objects.filter(client=client, is_active=True)
+        context = {"client": client, "case": case}
+
+        return context
+
+    def get(self, request, *args, **kwargs):
+        template = self.template_name
+        context = self.get_context_data(request)
+        return render(request, template, context)
 
 
-def edit_client_profile(request):
-    client = get_object_or_404(Client, user=request.user)
-    get_instance = ClientForm(instance=client)
-    post_instance = ClientForm(request.POST, request.FILES, instance=client)
+class EditClientProfileView(EditObjectMixin, View):
+    form_instance_class = ClientForm
+    success_url = "client_profile"
 
-    return edit_method(request, client, get_instance, post_instance, "profiles/edit_profile.html", "client_profile")
+    def get_object(self):
+        return get_object_or_404(Client, user=self.request.user)
+
+
+class GetLawyerList(TemplateView):
+    template_name = "lawyers_list.html"
+
+    def get(self, request, *args, **kwargs):
+        template = self.template_name
+        lawyers = Lawyer.objects.all()
+        return render(request, template, {"lawyers": lawyers})
 
 
 def retain_lawyer(request, lawyer_id):
@@ -115,23 +152,35 @@ def retain_lawyer(request, lawyer_id):
     return render(request, "ordering/lawyer_info.html", {"lawyer": lawyer})
 
 
-def create_case(request, lawyer_id):
-    user = request.user
-    client = Client.objects.get(user=user)
-    lawyer = get_object_or_404(Lawyer, pk=lawyer_id)
+class CreateCaseView(View):
+    template_name = "ordering/case_form.html"
+    success_url = "client_profile"
 
-    if request.method == "GET":
-        form = ClientCaseForm(initial={"lawyer": lawyer, "client": client})
-        return render(request, "ordering/case_form.html", {"form": form})
+    def get_context_data(self, request):
+        user = request.user
+        client = Client.objects.get(user=user)
+        lawyer = get_object_or_404(Lawyer, pk=self.kwargs["lawyer_id"])
+        context = {"lawyer": lawyer, "client": client}
 
-    form = ClientCaseForm(request.POST)
-    if form.is_valid():
-        case = form.save(commit=False)
-        case.lawyer = lawyer
-        case.save()
-        return redirect("client_profile")
+        return context
 
-    return render(request, "ordering/case_form.html", {"form": form})
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(request)
+        form = ClientCaseForm(initial=context)
+        template = self.template_name
+
+        return render(request, template, {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(request)
+        lawyer = context["lawyer"]
+
+        form = ClientCaseForm(request.POST)
+        if form.is_valid():
+            case = form.save(commit=False)
+            case.lawyer = lawyer
+            case.save()
+            return redirect(self.success_url)
 
 
 def lawyer_already_taken(request):

@@ -3,25 +3,36 @@ from django.urls import path
 
 from app import views, helpers
 from core import settings
+from app.views import (
+    GreetingPageView,
+    LawyerProfileView,
+    EditLawyerProfileView,
+    LawyerActiveCasesView,
+    CloseCaseView,
+    ClientProfileView,
+    EditClientProfileView,
+    GetLawyerList,
+    CreateCaseView,
+)
 
 urlpatterns = [
     # Main pages
-    path("", views.greeting_page, name="index"),
-    path("get-list/", views.lawyers_list, name="list"),
+    path("", GreetingPageView.as_view(), name="index"),
+    path("get-list/", GetLawyerList.as_view(), name="list"),
     # Profile views
-    path("lawyer-profile/", views.lawyer_profile, name="lawyer_profile"),
-    path("client-profile/", views.client_profile, name="client_profile"),
-    path("edit-lawyer-profile/", views.edit_lawyer_profile, name="edit_lawyer"),
-    path("edit-client-profile/", views.edit_client_profile, name="edit_client"),
-    path("active-cases/", views.lawyer_active_cases, name="lawyer_active_cases"),
-    path("close-case/<int:case_id>", views.close_case, name="close_case"),
+    path("lawyer-profile/", LawyerProfileView.as_view(), name="lawyer_profile"),
+    path("client-profile/", ClientProfileView.as_view(), name="client_profile"),
+    path("edit-lawyer-profile/", EditLawyerProfileView.as_view(), name="edit_lawyer"),
+    path("edit-client-profile/", EditClientProfileView.as_view(), name="edit_client"),
+    path("active-cases/", LawyerActiveCasesView.as_view(), name="lawyer_active_cases"),
+    path("close-case/<int:case_id>", CloseCaseView.as_view(), name="close_case"),
     # Navigation panel
     path("who-is-user/", helpers.get_user_type, name="who_is_user"),
     path("profile/", views.profile, name="profile"),
     path("navigation/", views.navigation_user_info, name="navigation"),
     # Ordering
     path("get-lawyer-info/<int:lawyer_id>", views.retain_lawyer, name="lawyer_info"),
-    path("create-case/<int:lawyer_id>", views.create_case, name="create_case"),
+    path("create-case/<int:lawyer_id>", CreateCaseView.as_view(), name="create_case"),
     path("lawyer-already-taken/", views.lawyer_already_taken, name="lawyer_already_taken"),
     # Feedback
     path("post-feedback/<int:lawyer>/<int:client>/", views.feedback_handler, name="post_feedback"),

@@ -10,8 +10,10 @@ from django.core.signing import Signer, BadSignature
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.views import View
 
 from app.forms import ClientForm, LawyerForm
+from app.mixins import CreateObjectMixin
 from app.models import Lawyer, Client
 from users.forms import UserCreationFormWithEmail
 
@@ -139,27 +141,13 @@ def select_role(request):
     return render(request, "roles/select_role.html")
 
 
-def client_registration(request):
-    if request.method == "POST":
-        form = ClientForm(request.POST)
-        if form.is_valid():
-            client = form.save(commit=False)
-            client.user = request.user
-            client.save()
-            return redirect("list")
-    else:
-        form = ClientForm()
-    return render(request, "roles/client_registration.html", {"form": form})
+class CreateClientView(CreateObjectMixin, View):
+    template_name = "roles/client_registration.html"
+    form_instance_class = ClientForm
+    success_url = "list"
 
 
-def lawyer_registration(request):
-    if request.method == "POST":
-        form = LawyerForm(request.POST)
-        if form.is_valid():
-            lawyer = form.save(commit=False)
-            lawyer.user = request.user
-            lawyer.save()
-            return redirect("profile")
-    else:
-        form = LawyerForm()
-    return render(request, "roles/lawyer_registration.html", {"form": form})
+class CreateLawyerView(CreateObjectMixin, View):
+    template_name = "roles/client_registration.html"
+    form_instance_class = LawyerForm
+    success_url = "profile"
