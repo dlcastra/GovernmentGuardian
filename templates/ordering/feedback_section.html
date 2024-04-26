@@ -1,3 +1,23 @@
+
+<script>
+    $(document).ready(function () {
+        $('#feedback-input').val('');
+        $(document).on('click', '.remove-feedback-btn', function () {
+            var feedbackID = $(this).siblings('.feedback-text').data('feedback-id');
+            var feedbackContainer = $(this).closest('.feedback');
+            $.ajax({
+                type: 'POST',
+                url: '/remove-feedback/' + feedbackID + '/',
+                data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success: function (response) {
+                    feedbackContainer.remove();
+                },
+            });
+        });
+    });
+
+</script>
+
 {% if has_case_with_lawyer %}
     <textarea name="feedback" id="feedback-input" placeholder="Add feedback here" maxlength="268"
               style="width: 1000px; height: 100px; vertical-align: top; resize: none" required></textarea><br>
@@ -6,27 +26,23 @@
 {% else %}
     <p>You must be a client of this lawyer to provide feedback.</p>
 {% endif %}
+
 <div id="feedback-container">
     {% if feedback %}
         {% for feedback in feedback %}
             <div class="feedback">
-                {{ feedback.title }}<br>
-                {{ feedback.client.name }}<br>
-
-                {{ feedback.text }}
-                {#                {% if user.id == comment.user.id %}#}
-                {#                    <h1 hidden="hidden" class="user-id">{{ user.id }}</h1>#}
-                {#                    <h1 hidden="hidden" class="comment-id">{{ comment.id }}</h1>#}
-                {#                    <button class="remove-comment-btn" type="button" data-video-id="{{ comment.video_id }}">Remove#}
-                {#                        comment#}
-                {#                    </button>#}
-                {#                {% endif %}#}
+                {{ feedback.title }}
+                <br>
+                {{ feedback.client.name }}
+                <br>
+                <span class="feedback-text" data-feedback-id="{{ feedback.id }}">{{ feedback.text }}</span>
+                {% if client.id == feedback.client.id %}
+                    <button class="remove-feedback-btn" type="button">Remove feedback</button>
+                {% endif %}
                 <br>
             </div>
         {% endfor %}
-
-
     {% else %}
-        There are no comments yet.<br>
+        There are no feedbacks yet.<br>
     {% endif %}
 </div>

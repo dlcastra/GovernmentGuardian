@@ -2,9 +2,10 @@ from django.http import JsonResponse, HttpResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
+from django.views.decorators.http import require_POST
 
 from app.forms import ClientForm, ClientCaseForm, EditLawyerForm, LawyerCaseForm
-from app.helpers import redirect_based_on_user_type, edit_method
+from app.helpers import redirect_based_on_user_type, edit_method, get_feedback_data
 from app.models import Lawyer, Client, Case, Feedback
 
 """ --- HOME PAGE --- """
@@ -90,42 +91,24 @@ def retain_lawyer(request, lawyer_id):
         return HttpResponse("You are not a registered client.")
 
     lawyer = get_object_or_404(Lawyer, pk=lawyer_id)
-    case = Case.objects.filter(client=client, is_active=True)
-    feedback_handler(request, lawyer, client)
     has_case_with_lawyer = Case.objects.filter(client=client, lawyer=lawyer).exists()
-
-    feedback = Feedback.objects.filter(lawyer=lawyer)
-    feedback_context = {
+    feedback = Feedback.objects.filter(lawyer=lawyer).all()
+    feedback_context = get_feedback_data(request, lawyer, has_case_with_lawyer, feedback)
+    feedback_html = render_to_string("ordering/feedback_section.html", context=feedback_context)
+    get_info_context = {
         "lawyer": lawyer,
         "feedback": feedback,
-        "case": Case.objects.filter(lawyer=lawyer, is_active=False),
+        "case": Case.objects.filter(lawyer=lawyer),
+        "client": client,
         "csrf_token": get_token(request),
         "has_case_with_lawyer": has_case_with_lawyer,
+        "feedback_html": feedback_html,
     }
-    feedback_html = render_to_string("ordering/feedback_section.html", context=feedback_context)
-
     if "get_info" in request.GET:
-        feedback_html = render_to_string("ordering/feedback_section.html", context=feedback_context)
-        get_info_context = {
-            "lawyer": lawyer,
-            "feedback": feedback,
-            "case": Case.objects.filter(lawyer=lawyer),
-            "client": client,
-            "feedback_html": feedback_html,
-            "has_case_with_lawyer": has_case_with_lawyer,
-        }
         return render(request, "ordering/lawyer_info.html", context=get_info_context)
-
-    elif "retain" in request.GET and case.exists():
-        return JsonResponse({"feedback_html": feedback_html})
 
     elif "retain" in request.GET:
         return redirect("create_case", lawyer_id)
-
-    if request.method == "POST":
-        feedback_html.update(request.POST)
-        return JsonResponse(feedback_html, safe=False)
-
     return render(request, "ordering/lawyer_info.html", {"lawyer": lawyer})
 
 
@@ -172,11 +155,27 @@ def custom_404(request, exception=None):
 """ --- FEEDBACK --- """
 
 
+# @require_POST
 def feedback_handler(request, lawyer, client):
-    case = Case.objects.filter(lawyer=lawyer, client=client).first()
+    has_case_with_lawyer = Case.objects.filter(client_id=client, lawyer_id=lawyer).exists()
+    feedback = Feedback.objects.filter(lawyer_id=lawyer)
+    feedback_context = get_feedback_data(request, lawyer, has_case_with_lawyer, feedback)
+    feedback_html = render_to_string("ordering/feedback_section.html", context=feedback_context)
+    case = Case.objects.filter(lawyer_id=lawyer, client_id=client).first()
     if case:
         content = request.POST.get("feedback")
-        if request.method == "POST":
-            Feedback.objects.create(client=client, lawyer=lawyer, case=case, text=content, title=case.article)
+        Feedback.objects.create(client_id=client, lawyer_id=lawyer, case=case, text=content, title=case.article)
+        return JsonResponse({"feedback_html": feedback_html})
+
     else:
         pass
+
+
+@require_POST
+def remove_feedback(request, feedback_id):
+    try:
+        feedback = Feedback.objects.get(id=feedback_id)
+        feedback.delete()
+    except Feedback.DoesNotExist:
+        return JsonResponse({"error": "Feedback does not exist"}, status=404)
+    return HttpResponse(status=204)

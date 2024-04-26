@@ -1,3 +1,4 @@
+from django.middleware.csrf import get_token
 from django.shortcuts import redirect, render
 
 from app.models import Lawyer, Client
@@ -40,3 +41,18 @@ def edit_method(request, obj, form_instance, post_form_instance, render_template
         return redirect(redirect_url)
 
     return render(request, render_template, {"form": obj})
+
+
+def get_feedback_data(request, lawyer, has_case_with_lawyer, feedback):
+
+    feedback_context = {
+        "lawyer": lawyer,
+        "feedback": feedback,
+        "csrf_token": get_token(request),
+        "has_case_with_lawyer": has_case_with_lawyer,
+    }
+    return feedback_context
+
+
+
+

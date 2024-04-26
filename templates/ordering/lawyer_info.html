@@ -48,6 +48,7 @@
 
 
     </style>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://malsup.github.io/jquery.form.js"></script>
     <script>
@@ -61,12 +62,8 @@
                     url: $(this).attr('action'),
                     data: formData,
                     success: function (response) {
-                        var newComment = $(response.feedback_html).find("#new-comment-id"); // Adjust selector for your new comment element
-                        if (newComment.length > 0) {
-                            $('#feedback-container').prepend(newComment); // Prepend the new comment to the top (or adjust based on desired placement)
-                        } else {
-                            console.error("Failed to find new comment element"); // Handle potential errors
-                        }
+                        $('#feedback-container').html(response.feedback_html);
+
                     },
                     error: function (xhr, status, error) {
                         console.error(error);
@@ -74,6 +71,7 @@
                 });
             });
         });
+
     </script>
 
 
@@ -100,7 +98,7 @@
                     </div>
                 </div>
                 <br>
-                
+
                 <form method="GET">
                     {% csrf_token %}
                     <input type="submit"
@@ -110,14 +108,14 @@
                     >
                 </form>
                 <br>
-                <form id="feedbackForm" method="POST">
+                <form id="feedbackForm" action="/post-feedback/{{ lawyer.id }}/{{ client.id }}/" method="GET">
                     <div id="feedback-container">
                         {% csrf_token %}
                         {% include 'ordering/feedback_section.html' %}
                     </div>
                     <br>
                 </form>
-                
+
             </div>
             <div class="col-md-6 d-flex flex-column justify-content-between">
                 <div class="card mb-4 shadow-sm" style="border-radius: 15px; height: 420px">
