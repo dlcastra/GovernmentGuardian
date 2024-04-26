@@ -1,4 +1,38 @@
+<style>
+    .scrollable-text {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-left: 10px;
+            margin-right: 10px;
+            max-height: 420px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
 
+
+        .scrollable-text::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .scrollable-text::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+        }
+
+        .scrollable-text::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .scrollable-text::-webkit-scrollbar-track {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .scrollable-text::-webkit-scrollbar-thumb {
+            margin-right: 2px;
+        }
+</style>
 <script>
     $(document).ready(function () {
         $('#feedback-input').val('');
@@ -19,26 +53,33 @@
 </script>
 
 {% if has_case_with_lawyer %}
-    <textarea name="feedback" id="feedback-input" placeholder="Add feedback here" maxlength="268"
-              style="width: 1000px; height: 100px; vertical-align: top; resize: none" required></textarea><br>
+    <textarea name="feedback" id="feedback-input" placeholder=" Add feedback here(max. 255 characters)" maxlength="268"
+              style="width: 100%; max-width: 750px; height: 100px; max-height: 150px ;vertical-align: top; resize: none; border-radius: 15px;"
+              required></textarea><br>
     <br>
-    <input type="submit" value="Submit">
+    <input class="btn btn-success" type="submit" value="Submit">
+    <br>
+    <br>
+
 {% else %}
     <p>You must be a client of this lawyer to provide feedback.</p>
 {% endif %}
 
-<div id="feedback-container">
+<div class="scrollable-text" id="feedback-container" style="overflow-y: scroll; height: 300px;">
     {% if feedback %}
         {% for feedback in feedback %}
             <div class="feedback">
-                {{ feedback.title }}
-                <br>
-                {{ feedback.client.name }}
-                <br>
-                <span class="feedback-text" data-feedback-id="{{ feedback.id }}">{{ feedback.text }}</span>
+                <h5>User: {{ feedback.client.name }} | Article:{{ feedback.title }}</h5>
+                <span class="feedback-text" style="" data-feedback-id="{{ feedback.id }}">{{ feedback.text }}</span>
                 {% if client.id == feedback.client.id %}
-                    <button class="remove-feedback-btn" type="button">Remove feedback</button>
+                    <button 
+                            class="btn btn-danger remove-feedback-btn" 
+                            style="width: 100%; max-width: 75px; height: 30px; font-size: 12px; margin-top: 5px"
+                            type="button">Remove
+                            
+                    </button>
                 {% endif %}
+                <br>
                 <br>
             </div>
         {% endfor %}
@@ -46,3 +87,4 @@
         There are no feedbacks yet.<br>
     {% endif %}
 </div>
+

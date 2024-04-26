@@ -89,9 +89,10 @@ def retain_lawyer(request, lawyer_id):
         client = Client.objects.get(user=request.user)
     except Client.DoesNotExist:
         return HttpResponse("You are not a registered client.")
-
+    case = Case.objects.filter(client=client, is_active=True)
     lawyer = get_object_or_404(Lawyer, pk=lawyer_id)
     has_case_with_lawyer = Case.objects.filter(client=client, lawyer=lawyer).exists()
+
     feedback = Feedback.objects.filter(lawyer=lawyer).all()
     feedback_context = get_feedback_data(request, lawyer, has_case_with_lawyer, feedback)
     feedback_html = render_to_string("ordering/feedback_section.html", context=feedback_context)
@@ -104,9 +105,11 @@ def retain_lawyer(request, lawyer_id):
         "has_case_with_lawyer": has_case_with_lawyer,
         "feedback_html": feedback_html,
     }
+
     if "get_info" in request.GET:
         return render(request, "ordering/lawyer_info.html", context=get_info_context)
-
+    elif "retain" in request.GET and case.exists():
+        return redirect("lawyer_already_taken")
     elif "retain" in request.GET:
         return redirect("create_case", lawyer_id)
     return render(request, "ordering/lawyer_info.html", {"lawyer": lawyer})
@@ -116,6 +119,7 @@ def create_case(request, lawyer_id):
     user = request.user
     client = Client.objects.get(user=user)
     lawyer = get_object_or_404(Lawyer, pk=lawyer_id)
+
     if request.method == "GET":
         form = ClientCaseForm(initial={"lawyer": lawyer, "client": client})
         return render(request, "ordering/case_form.html", {"form": form})
@@ -155,7 +159,7 @@ def custom_404(request, exception=None):
 """ --- FEEDBACK --- """
 
 
-# @require_POST
+@require_POST
 def feedback_handler(request, lawyer, client):
     has_case_with_lawyer = Case.objects.filter(client_id=client, lawyer_id=lawyer).exists()
     feedback = Feedback.objects.filter(lawyer_id=lawyer)
