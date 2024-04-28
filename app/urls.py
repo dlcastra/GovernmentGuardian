@@ -13,6 +13,7 @@ from app.views import (
     EditClientProfileView,
     GetLawyerList,
     CreateCaseView,
+    RetainLawyerView
 )
 
 urlpatterns = [
@@ -31,7 +32,7 @@ urlpatterns = [
     path("profile/", views.profile, name="profile"),
     path("navigation/", views.navigation_user_info, name="navigation"),
     # Ordering
-    path("get-lawyer-info/<int:lawyer_id>", views.retain_lawyer, name="lawyer_info"),
+    path("get-lawyer-info/<int:lawyer_id>", RetainLawyerView.as_view(), name="lawyer_info"),
     path("create-case/<int:lawyer_id>", CreateCaseView.as_view(), name="create_case"),
     path("lawyer-already-taken/", views.lawyer_already_taken, name="lawyer_already_taken"),
     # Feedback
