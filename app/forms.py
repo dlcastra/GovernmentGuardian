@@ -189,6 +189,11 @@ class LawyerCaseForm(ClientCaseForm):
             "description": "Description",
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["is_active"].widget = forms.HiddenInput()
+        self.fields["is_active"].initial = kwargs.get("initial", {}).get("")
+
     def clean_article(self):
         article = self.cleaned_data["article"]
         if len(article) > 255:
