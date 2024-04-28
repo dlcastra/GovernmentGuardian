@@ -1,3 +1,188 @@
 {% extends "base.html" %}
 {% block content %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome to Government Guardian</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+            }
+
+            .welcome-section {
+                padding: 20px;
+                text-align: center;
+            }
+
+            .company-description {
+                padding: 20px;
+            }
+
+            .card-carousel {
+                display: flex;
+                overflow-x: hidden; /* Change to hidden */
+                gap: 10px;
+                padding: 10px;
+                margin-top: 10px;
+                position: relative; /* Добавлено для позиционирования кнопок */
+            }
+
+            .card {
+                width: 400px;
+                height: 200px;
+                background-color: #ffffff;
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+                padding: 20px; /* Добавлено для отступа текста внутри карточки */
+            }
+
+            .scroll-btn {
+                position: absolute;
+                top: 80px;
+                background-color: #e8e8e8;
+                border: none;
+                width: 20px;
+                height: 40px;
+                cursor: pointer;
+                border-radius: 20px;
+            }
+
+            .scroll-btn:hover {
+                background-color: #aaa; /* Изменяем цвет при наведении */
+            }
+
+            .scroll-btn.left {
+                left: 0;
+            {#margin-left: 150px;#}
+            }
+
+            .scroll-btn.right {
+                right: 0;
+            {#margin-right: 170px;#}
+            }
+
+            .center {
+                margin: auto;
+                width: 90%;
+                padding: 10px;
+            }
+        </style>
+    </head>
+    <body>
+    <div class="welcome-section">
+{#        <h2>Welcome to Government Guardian</h2>#}
+        <h3 style="text-align: center">Find Your Trusted Legal Lawyer</h3>
+    </div>
+    <h1 style="text-align: center">Why Choose Government Guardian?</h1>
+    <div class="card-carousel center" style="text-align: center; margin-bottom: 20px">
+        <button class="scroll-btn left">&lt;</button>
+        <div class="card" style="margin-right: 20px; margin-left: 20px">
+            <div>
+                <h6>Expertise:</h6>
+            </div>
+            <div class="text-secondary">
+                Our network consists of highly qualified lawyers specializing in various fields of law, ensuring you
+                find the right match for your legal needs.
+            </div>
+        </div>
+
+        <div class="card" style="margin-right: 20px; margin-left: 20px">
+            <div>
+                <h6>Transparency:</h6>
+            </div>
+            <div class="text-secondary">
+                Access comprehensive profiles of our lawyers, including ratings, reviews, and detailed information about
+                their experience and areas of practice.
+            </div>
+        </div>
+
+        <div class="card" style="margin-right: 20px; margin-left: 20px">
+            <div>
+                <h6>Convenience:</h6>
+            </div>
+            <div class="text-secondary">
+                Search, compare, and connect with lawyers from the comfort of your home. Our user-friendly interface
+                makes it easy to find the perfect legal advisor for you.
+            </div>
+        </div>
+
+        <div class="card" style="margin-right: 20px; margin-left: 20px">
+            <div>
+                <h6>Peace of Mind:</h6>
+            </div>
+            <div class="text-secondary">
+                Rest assured knowing that all lawyers on our platform are thoroughly vetted and committed to upholding
+                the highest ethical standards.
+            </div>
+        </div>
+
+        <div class="card" style="margin-right: 20px; margin-left: 20px">
+            <div>
+                <h6>Accessibility:</h6>
+            </div>
+            <div class="text-secondary">
+                Our platform ensures access to legal expertise regardless of location or schedule constraints. Whether
+                you're in a bustling city or a remote area, Government Guardian
+            </div>
+        </div>
+
+        <button class="scroll-btn right">&gt;</button>
+    </div>
+    <div class="company-description">
+        <p class="center" style="text-align: center; width: 400px">
+            At Government Guardian, we believe in empowering individuals with the knowledge and resources they need to
+            navigate the complexities of the legal system. Our platform connects you with experienced lawyers who are
+            committed to providing exceptional service and representation.
+        </p>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const cardCarousel = document.querySelector(".card-carousel");
+            const cards = document.querySelectorAll(".card");
+            const numVisibleCards = 3;
+            let startIndex = 0;
+
+            // Show only the first three cards initially
+            for (let i = 0; i < cards.length; i++) {
+                if (i < numVisibleCards) {
+                    cards[i].style.display = "block";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+
+            function scrollCarousel(direction) {
+                if (direction === "right") {
+                    startIndex = (startIndex + 1) % cards.length;
+                } else {
+                    startIndex = (startIndex - 1 + cards.length) % cards.length;
+                }
+                for (let i = 0; i < cards.length; i++) {
+                    const index = (startIndex + i) % cards.length;
+                    if (i < numVisibleCards) {
+                        cards[index].style.display = "block";
+                    } else {
+                        cards[index].style.display = "none";
+                    }
+                }
+            }
+
+            const scrollRightBtn = document.querySelector(".scroll-btn.right");
+            scrollRightBtn.addEventListener("click", function () {
+                scrollCarousel("right");
+            });
+
+            const scrollLeftBtn = document.querySelector(".scroll-btn.left");
+            scrollLeftBtn.addEventListener("click", function () {
+                scrollCarousel("left");
+            });
+
+        });
+
+    </script>
+    </body>
+    </html>
 {% endblock %}

@@ -81,6 +81,24 @@ class CloseCaseView(EditObjectMixin, View):
     def get_object(self):
         return get_object_or_404(Case, pk=self.kwargs["case_id"])
 
+    def post(self, request, *args, **kwargs):
+        instance = self.get_object()
+        lawyer = instance.lawyer
+        form = self.form_instance_class(request.POST)
+
+        if form.is_valid():
+            instance.is_active = False
+            if request.POST.get("case_closed_successfully"):
+                lawyer.successful_cases += 1
+            else:
+                lawyer.unsuccessful_cases += 1
+            form.save(commit=False)
+            instance.save()
+            lawyer.save()
+            return redirect(self.success_url)
+
+        return HttpResponse(form.errors)
+
 
 """ --- FUNCTIONS FOR CLIENT ---"""
 

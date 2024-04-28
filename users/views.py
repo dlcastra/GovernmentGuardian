@@ -56,7 +56,7 @@ class CustomLoginView(LoginView):
         lawyer = Lawyer.objects.filter(user=user)
         client = Client.objects.filter(user=user)
         if lawyer.exists() or client.exists():
-            return "/get-list/"
+            return "/profile/"
         else:
             return "/select-role/"
 
