@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<style>
+    body {
+        margin-top: 20px;
+        color: #1a202c;
+        text-align: left;
+        background-color: #e2e8f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .card {
+        box-shadow: 0 3px 10px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
+        width: 70%;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        padding: 20px;
+        border-radius: 20px;
+    }
+
+    .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% block content %}
+    <br>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-lg">
+                    <div class="card-body">
+                        <h1 class="card-title text-center">Edit Profile</h1>
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% bootstrap_form form %}
+                            <input type="submit" class="btn btn-primary btn-block" value="Save"
+                                   style="margin-top: 10px">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

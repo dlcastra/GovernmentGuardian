@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <style>
+        @media (max-width: 992px) {
+            .col-md-6 {
+                flex-basis: 100%;
+                max-width: 100%;
+            }
+        }
+
+        .scrollable-text {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-left: 10px;
+            margin-right: 10px;
+            max-height: 420px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+
+        .scrollable-text::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .scrollable-text::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+        }
+
+        .scrollable-text::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .scrollable-text::-webkit-scrollbar-track {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .scrollable-text::-webkit-scrollbar-thumb {
+            margin-right: 2px;
+        }
+
+
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://malsup.github.io/jquery.form.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#feedbackForm').submit(function (event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+                formData += '&csrfmiddlewaretoken={{ csrf_token }}';
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).attr('action'),
+                    data: formData,
+                    success: function (response) {
+                        $('#feedback-container').html(response.feedback_html);
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+
+        });
+
+
+    </script>
+
+
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-sm" style="border-radius: 15px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Full name</h5>
+                        <p class="card-text">{{ lawyer.name }} {{ lawyer.surname }}</p>
+                        <h5 class="card-title">Experience</h5>
+                        <p class="card-text">{{ lawyer.experience }}</p>
+                        <h5 class="card-title">Price</h5>
+                        <p class="card-text">{{ lawyer.price }}</p>
+                    </div>
+                </div>
+                <div class="card shadow-sm" style="border-radius: 15px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Successful cases</h5>
+                        <p class="card-text">{{ lawyer.successful_cases }}</p>
+                        <h5 class="card-title">Unsuccessful cases</h5>
+                        <p class="card-text">{{ lawyer.unsuccessful_cases }}</p>
+                    </div>
+                </div>
+                <br>
+
+                <form method="GET">
+                    {% csrf_token %}
+                    <input type="submit"
+                           class="btn btn-primary align-self-end"
+                           value="Retain a lawyer"
+                           name="retain"
+                    >
+                </form>
+                <br>
+                <div class="card shadow-sm" style="border-radius: 15px;">
+                    <div class="card-body">
+                        <form id="feedbackForm" action="/post-feedback/{{ lawyer.id }}/" method="GET">
+                            <div id="feedback-container">
+                                {% csrf_token %}
+                                {% include 'ordering/feedback_section.html' %}
+                            </div>
+                            <br>
+
+                        </form>
+                    </div>
+                </div>
+                <br>
+            </div>
+            <div class="col-md-6 d-flex flex-column justify-content-between">
+                <div class="card mb-4 shadow-sm" style="border-radius: 15px; height: 420px">
+                    <div class="card-body scrollable-text">
+                        <h5 class="card-title">Characterization</h5>
+                        <p class="card-text">{{ lawyer.characterization }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

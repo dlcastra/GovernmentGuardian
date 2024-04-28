@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <style>
+        body {
+            margin-top: 20px;
+            color: #1a202c;
+            text-align: left;
+            background-color: #e2e8f0;
+        }
+
+        .main-body {
+            padding: 15px;
+        }
+
+        .card {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            height: 300px;
+        }
+
+
+        .card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 0 solid rgba(0, 0, 0, .125);
+            border-radius: .25rem;
+            min-height: 350px;
+            height: auto;
+            max-height: 800px;
+        }
+
+        .card-body {
+            flex: 1;
+        }
+
+        .gutters-sm {
+            margin-right: -8px;
+            margin-left: -8px;
+        }
+
+        .gutters-sm, .gutters-sm {
+            padding-right: 8px;
+            padding-left: 8px;
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem !important;
+        }
+
+        .row.gutters-sm > .col-md-4 {
+            margin-bottom: 20px;
+            display: flex;
+        }
+
+        .custom-img {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 300px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    <div class="container">
+        <div class="main-body">
+            <div class="row gutters-sm">
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-column align-items-center text-center">
+                                <img src="{{ client.image.url }}" alt="NO" class="custom-img">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">Full Name:</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    {{ client.name }} {{ client.surname }}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">Birthdate:</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    {{ client.birthdate }}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">Email:</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    {{ client.email }}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">Mobile:</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    {{ client.phone }}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">Your lawyer:</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    {% if client.client_lawyer.exists and case %}
+                                        <h5>{{ client.client_lawyer.last.lawyer.name }} {{ client.client_lawyer.last.lawyer.surname }}</h5>
+                                    {% else %}
+                                        <h5>You don't have a lawyer assigned yet.</h5>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 5px">
+                                <div class="col-sm-12">
+                                    <form method="get">
+                                        {% csrf_token %}
+                                        {{ form.as_p }}
+                                        <input type="submit" formaction="{% url 'edit_client' %}"
+                                               class="btn btn-primary"
+                                               value="Edit profile">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% load static %}
+{% block content %}
+    <script src="{% static 'admin/js/jquery.init.js' %}"></script>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <style>
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+        }
+    </style>
+    <div>
+        <button type="button" onclick="window.location.href='{% url 'index' %}'" class="btn btn-light"
+                style="margin-top: 10px; margin-left: 10px">
+            Back to website
+        </button>
+
+        <img src="{% static 'errors/404.jpg' %}" alt="404" style="min-width: 400px; max-width: 70% ;height: auto;"
+             class="center">
+    </div>
+{% endblock %}

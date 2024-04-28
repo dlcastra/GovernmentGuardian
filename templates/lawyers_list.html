@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <style>
+        body {
+            margin-top: 20px;
+            color: #1a202c;
+            text-align: left;
+            background-color: #e2e8f0;
+        }
+
+        .main-body {
+            padding: 15px;
+        }
+
+        .card {
+            box-shadow: 0 3px 10px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+        }
+
+        .card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 0 solid rgba(0, 0, 0, .125);
+            border-radius: .25rem;
+        }
+
+        .card-body {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem !important;
+        }
+
+        .row.gutters-sm > {
+            margin-bottom: 20px;
+            display: flex;
+        }
+
+        .lawyer-rating {
+            padding: 20px;
+            font-size: 22px;
+        }
+
+        .custom-img {
+            max-width: 100%;
+            max-height: 700px;
+            margin-left: 20px; /* Added */
+            align-self: center; /* Center vertically */
+            width: auto;
+            height: auto;
+            {#max-width: 100%;#}
+            {#max-height: 300px;#}
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    <div class="container">
+        <div class="main-body">
+            <div class="row justify-content-center text-center" style="padding: 20px">
+                {% for lawyer in lawyers %}
+                    <div class="col-md-8 mb-3">
+                        <div class="card mb-3" style="border-radius: 15px;">
+                            <div class="card-body" style="text-align: left">
+                                <div class="row">
+                                    <div class="col-md-4"> <!-- Image Column -->
+                                        <div class="d-flex flex-column align-items-center text-center">
+                                            <img src="{{ lawyer.image.url }}" alt="NO" class="custom-img">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8"> <!-- Text Column -->
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <h4 class="mb-0">Rating:</h4>
+                                            </div>
+                                            <div class="col-sm-5 text-secondary">
+                                                <span class="lawyer-rating-value-{{ lawyer.id }}"></span>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <h6 class="mb-0">Full Name:</h6>
+                                            </div>
+                                            <div class="col-sm-5 text-secondary">
+                                                {{ lawyer.name }} {{ lawyer.surname }}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <h6 class="mb-0">Experience:</h6>
+                                            </div>
+                                            <div class="col-sm-2 text-secondary">
+                                                {{ lawyer.experience }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <h6 class="mb-0">Price:</h6>
+                                            </div>
+                                            <div class="col-sm-5 text-secondary">
+                                                {{ lawyer.price }}
+                                            </div>
+                                        </div>
+
+                                        <script>
+                                            $(document).ready(function () {
+                                                function calculateRating(id) {
+                                                    const successfulCases = parseFloat({{ lawyer.successful_cases }});
+                                                    const unsuccessfulCases = parseFloat({{ lawyer.unsuccessful_cases }});
+                                                    const experience = parseFloat({{ lawyer.experience }});
+
+                                                    const rating = (successfulCases - unsuccessfulCases) * Math.sqrt(1 + experience);
+                                                    $('.lawyer-rating-value-' + id).text(rating.toFixed(2));
+                                                }
+
+                                                calculateRating({{ lawyer.id }});
+                                            });
+                                        </script>
+                                        <br>
+                                        <form method="get" style="margin-top: 93px">
+                                            {% csrf_token %}
+                                            <input type="submit" formaction="{% url 'lawyer_info' lawyer.id %}"
+                                                   class="btn btn-primary"
+                                                   value="More info"
+                                                   name="get_info"
+                                            >
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
