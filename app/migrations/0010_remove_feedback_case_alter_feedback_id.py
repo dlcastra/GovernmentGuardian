@@ -6,17 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0009_client_image_lawyer_image'),
+        ("app", "0009_client_image_lawyer_image"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='feedback',
-            name='case',
+            model_name="feedback",
+            name="case",
         ),
         migrations.AlterField(
-            model_name='feedback',
-            name='id',
+            model_name="feedback",
+            name="id",
             field=models.AutoField(editable=False, primary_key=True, serialize=False, unique=True),
         ),
     ]

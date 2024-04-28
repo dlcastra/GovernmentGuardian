@@ -45,9 +45,19 @@ def data_handler(request, lawyer_id):
     feedback = Feedback.objects.filter(lawyer_id=lawyer_id).all()
     client_id = Client.objects.get(user=request.user).id
     has_case_with_lawyer = Case.objects.filter(client_id=client_id, lawyer_id=lawyer_id).exists()
-    feedback_html = render_to_string("ordering/feedback_section.html",
-                                     {"feedback": feedback, "has_case_with_lawyer": has_case_with_lawyer,
-                                      "csrf_token": get_token(request), "client_id": client_id})
+    feedback_html = render_to_string(
+        "ordering/feedback_section.html",
+        {
+            "feedback": feedback,
+            "has_case_with_lawyer": has_case_with_lawyer,
+            "csrf_token": get_token(request),
+            "client_id": client_id,
+        },
+    )
     csrf_token = get_token(request)
-    return {"feedback_html": feedback_html, "client_id": client_id,
-            "has_case_with_lawyer": has_case_with_lawyer, "csrf_token": csrf_token}
+    return {
+        "feedback_html": feedback_html,
+        "client_id": client_id,
+        "has_case_with_lawyer": has_case_with_lawyer,
+        "csrf_token": csrf_token,
+    }
