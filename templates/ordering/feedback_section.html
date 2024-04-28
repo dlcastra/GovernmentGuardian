@@ -36,7 +36,7 @@
 <script>
     $(document).ready(function () {
         $('#feedback-input').val('');
-        $(document).on('click', '.remove-feedback-btn', function () {
+        $('#feedback-container').on('click', '.remove-feedback-btn', function () {
             var feedbackID = $(this).siblings('.feedback-text').data('feedback-id');
             var feedbackContainer = $(this).closest('.feedback');
             $.ajax({
@@ -71,12 +71,12 @@
             <div class="feedback">
                 <h5>User: {{ feedback.client.name }} | Article:{{ feedback.title }}</h5>
                 <span class="feedback-text" style="" data-feedback-id="{{ feedback.id }}">{{ feedback.text }}</span>
-                {% if client.id == feedback.client.id %}
-                    <button 
-                            class="btn btn-danger remove-feedback-btn" 
+                {% if client_id == feedback.client.id %}
+                    <button
+                            class="btn btn-danger remove-feedback-btn"
                             style="width: 100%; max-width: 75px; height: 30px; font-size: 12px; margin-top: 5px"
                             type="button">Remove
-                            
+
                     </button>
                 {% endif %}
                 <br>

@@ -1,13 +1,12 @@
+from django.core import serializers
 from django.http import JsonResponse, HttpResponse
-from django.middleware.csrf import get_token
 from django.shortcuts import render, redirect, get_object_or_404
-from django.template.loader import render_to_string
 from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView
-
+import json
 from app.forms import ClientForm, ClientCaseForm, EditLawyerForm, LawyerCaseForm
-from app.helpers import redirect_based_on_user_type, get_feedback_data
+from app.helpers import redirect_based_on_user_type, data_handler
 from app.mixins import EditObjectMixin
 from app.models import Lawyer, Client, Case, Feedback
 
@@ -127,29 +126,18 @@ def retain_lawyer(request, lawyer_id):
     except Client.DoesNotExist:
         return HttpResponse("You are not a registered client.")
     case = Case.objects.filter(client=client, is_active=True)
-    lawyer = get_object_or_404(Lawyer, pk=lawyer_id)
-    has_case_with_lawyer = Case.objects.filter(client=client, lawyer=lawyer).exists()
 
-    feedback = Feedback.objects.filter(lawyer=lawyer).all()
-    feedback_context = get_feedback_data(request, lawyer, has_case_with_lawyer, feedback)
-    feedback_html = render_to_string("ordering/feedback_section.html", context=feedback_context)
-    get_info_context = {
-        "lawyer": lawyer,
-        "feedback": feedback,
-        "case": Case.objects.filter(lawyer=lawyer),
-        "client": client,
-        "csrf_token": get_token(request),
-        "has_case_with_lawyer": has_case_with_lawyer,
-        "feedback_html": feedback_html,
-    }
-
+    get_info_context = data_handler(request, lawyer_id)
+    get_info_context["case"] = case
+    get_info_context["lawyer"] = get_object_or_404(Lawyer, pk=lawyer_id)
+    get_info_context["feedback"] = Feedback.objects.filter(lawyer_id=lawyer_id).all()
     if "get_info" in request.GET:
         return render(request, "ordering/lawyer_info.html", context=get_info_context)
     elif "retain" in request.GET and case.exists():
         return redirect("lawyer_already_taken")
     elif "retain" in request.GET:
         return redirect("create_case", lawyer_id)
-    return render(request, "ordering/lawyer_info.html", {"lawyer": lawyer})
+    return render(request, "ordering/lawyer_info.html", context=get_info_context)
 
 
 class CreateCaseView(View):
@@ -208,17 +196,15 @@ def custom_404(request, exception=None):
 """ --- FEEDBACK --- """
 
 
-@require_POST
-def feedback_handler(request, lawyer, client):
-    has_case_with_lawyer = Case.objects.filter(client_id=client, lawyer_id=lawyer).exists()
-    feedback = Feedback.objects.filter(lawyer_id=lawyer)
-    feedback_context = get_feedback_data(request, lawyer, has_case_with_lawyer, feedback)
-    feedback_html = render_to_string("ordering/feedback_section.html", context=feedback_context)
-    case = Case.objects.filter(lawyer_id=lawyer, client_id=client).first()
+# @require_POST
+def feedback_handler(request, lawyer_id):
+    get_data = data_handler(request, lawyer_id)
+    client_id = get_data['client_id']
+    case = Case.objects.filter(lawyer_id=lawyer_id, client_id=client_id).first()
     if case:
         content = request.POST.get("feedback")
-        Feedback.objects.create(client_id=client, lawyer_id=lawyer, case=case, text=content, title=case.article)
-        return JsonResponse({"feedback_html": feedback_html})
+        Feedback.objects.create(client_id=client_id, text=content, title=case.article, lawyer_id=lawyer_id)
+        return JsonResponse(data_handler(request, lawyer_id))
 
     else:
         pass

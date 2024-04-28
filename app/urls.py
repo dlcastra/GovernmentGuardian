@@ -35,7 +35,7 @@ urlpatterns = [
     path("create-case/<int:lawyer_id>", CreateCaseView.as_view(), name="create_case"),
     path("lawyer-already-taken/", views.lawyer_already_taken, name="lawyer_already_taken"),
     # Feedback
-    path("post-feedback/<int:lawyer>/<int:client>/", views.feedback_handler, name="post_feedback"),
+    path("post-feedback/<int:lawyer_id>/", views.feedback_handler, name="post_feedback"),
     path("remove-feedback/<int:feedback_id>/", views.remove_feedback, name="remove_feedback"),
     # Errors
     path("404/", views.custom_404, name="custom_404"),

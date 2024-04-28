@@ -70,7 +70,9 @@
                     }
                 });
             });
+
         });
+
 
     </script>
 
@@ -110,12 +112,13 @@
                 <br>
                 <div class="card shadow-sm" style="border-radius: 15px;">
                     <div class="card-body">
-                        <form id="feedbackForm" action="/post-feedback/{{ lawyer.id }}/{{ client.id }}/" method="GET">
+                        <form id="feedbackForm" action="/post-feedback/{{ lawyer.id }}/" method="GET">
                             <div id="feedback-container">
                                 {% csrf_token %}
                                 {% include 'ordering/feedback_section.html' %}
                             </div>
                             <br>
+
                         </form>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 from django.middleware.csrf import get_token
-from django.shortcuts import redirect, render
-
-from app.models import Lawyer, Client
+from django.shortcuts import redirect, render, get_object_or_404
+from django.template.loader import render_to_string
+from app.models import Lawyer, Client, Feedback, Case
 
 
 def get_user_type(request):
@@ -41,11 +41,13 @@ def edit_method(request, form_instance, post_form_instance, render_template, red
         return redirect(redirect_url)
 
 
-def get_feedback_data(request, lawyer, has_case_with_lawyer, feedback):
-    feedback_context = {
-        "lawyer": lawyer,
-        "feedback": feedback,
-        "csrf_token": get_token(request),
-        "has_case_with_lawyer": has_case_with_lawyer,
-    }
-    return feedback_context
+def data_handler(request, lawyer_id):
+    feedback = Feedback.objects.filter(lawyer_id=lawyer_id).all()
+    client_id = Client.objects.get(user=request.user).id
+    has_case_with_lawyer = Case.objects.filter(client_id=client_id, lawyer_id=lawyer_id).exists()
+    feedback_html = render_to_string("ordering/feedback_section.html",
+                                     {"feedback": feedback, "has_case_with_lawyer": has_case_with_lawyer,
+                                      "csrf_token": get_token(request), "client_id": client_id})
+    csrf_token = get_token(request)
+    return {"feedback_html": feedback_html, "client_id": client_id,
+            "has_case_with_lawyer": has_case_with_lawyer, "csrf_token": csrf_token}

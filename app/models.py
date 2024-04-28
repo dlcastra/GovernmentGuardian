@@ -46,14 +46,14 @@ class Lawyer(models.Model):
 
 
 class Feedback(models.Model):
+    id = models.AutoField(primary_key=True, editable=False, unique=True)
     client = models.ForeignKey("Client", on_delete=models.CASCADE, related_name="feedback")
-    lawyer = models.ForeignKey("Lawyer", on_delete=models.CASCADE, related_name="feedback")
-    case = models.ForeignKey("Case", on_delete=models.CASCADE, related_name="feedback")
     title = models.CharField(max_length=255)
     text = models.CharField(max_length=255)
+    lawyer = models.ForeignKey("Lawyer", on_delete=models.CASCADE, related_name="feedback")
 
     def __str__(self):
-        return self.title
+        return str(self.id)
 
 
 class Case(models.Model):
