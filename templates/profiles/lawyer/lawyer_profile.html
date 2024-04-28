@@ -66,6 +66,7 @@
             max-width: 100%;
             max-height: 300px;
         }
+
         .scrollable-text {
             margin-top: 10px;
             margin-bottom: 10px;
@@ -99,6 +100,13 @@
         .scrollable-text::-webkit-scrollbar-thumb {
             margin-right: 2px;
         }
+
+        .custom-card {
+            max-width: 1200px; /* Максимальная ширина 1200 пикселей */
+            width: 100%; /* Занимает всю доступную ширину контейнера */
+            /* Другие стили по вашему усмотрению */
+        }
+
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     {% load bootstrap5 %}
@@ -213,9 +221,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8 mb-3" style="text-align: left; height: auto; width: auto">
-                    <div class="card mb-3 scrollable-text"
-                         style="padding: 10px; max-height: 300px; overflow-y: auto; overflow-x: hidden;">
+                <div class="col-md-8 mb-3" style="text-align: left; height: auto; min-width: 300px; width: auto">
+                    <div class="card mb-3 scrollable-text custom-card"
+                         style="
+                         padding: 10px;
+                         height: auto;
+                         min-height: 200px;
+                         max-height: 500px;
+                         width: 100% ;
+                         max-width: 1300px;
+                         min-width: 200px;
+                         overflow-y: auto;
+                         overflow-x: hidden;
+                         margin-left: 0;
+                        ">
                         <div class="row">
                             <div>
                                 <h6 class="mb-0">Characterization:</h6>
@@ -226,8 +245,6 @@
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
     </div>
