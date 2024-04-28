@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -11,14 +12,14 @@ class ClientViewSet(
 ):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
-    # permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class LawyerViewSet(generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView, GenericViewSet):
     queryset = Lawyer.objects.all()
     serializer_class = LawyerSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
-    # permission_classes = [IsAuthenticatedOrReadOnly]
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
@@ -30,6 +31,7 @@ class LawyerViewSet(generics.ListAPIView, generics.RetrieveAPIView, generics.Cre
 class CaseViewSet(generics.ListAPIView, generics.RetrieveAPIView, generics.CreateAPIView, GenericViewSet):
     queryset = Case.objects.filter(is_active=True)
     serializer_class = CaseSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()

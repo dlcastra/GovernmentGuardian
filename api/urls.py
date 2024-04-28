@@ -1,5 +1,5 @@
-# import rest_framework.authtoken.views
-# from django.urls import path
+import rest_framework.authtoken.views
+from django.urls import path
 from rest_framework import routers
 
 from api import views
@@ -10,3 +10,5 @@ router.register("lawyers-api", views.LawyerViewSet, "lawyers")
 router.register("cases-api", views.CaseViewSet, "cases")
 
 urlpatterns = router.urls
+urlpatterns += [
+    path("api-token-auth/", rest_framework.authtoken.views.obtain_auth_token)]

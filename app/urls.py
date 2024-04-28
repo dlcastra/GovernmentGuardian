@@ -13,7 +13,7 @@ from app.views import (
     EditClientProfileView,
     GetLawyerList,
     CreateCaseView,
-    RetainLawyerView
+    RetainLawyerView,
 )
 
 urlpatterns = [
