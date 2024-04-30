@@ -142,12 +142,12 @@ def select_role(request):
 
 
 class CreateClientView(CreateObjectMixin, View):
-    template_name = "roles/client_registration.html"
+    template_name = "roles/user_registration.html"
     form_instance_class = ClientForm
     success_url = "list"
 
 
 class CreateLawyerView(CreateObjectMixin, View):
-    template_name = "roles/client_registration.html"
+    template_name = "roles/user_registration.html"
     form_instance_class = LawyerForm
     success_url = "profile"
