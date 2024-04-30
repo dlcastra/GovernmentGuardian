@@ -1,12 +1,13 @@
 import phonenumbers
 from django import forms
+from django.core.validators import RegexValidator
 
 from app.models import Client, Lawyer, Case
 
 
 class ClientForm(forms.ModelForm):
     birthdate = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
-
+    phone = forms.CharField(validators=[RegexValidator(regex=r'^\+\d{1,3}\d{5,15}$', message="Invalid phone number")])
     class Meta:
         model = Client
         fields = ["image", "name", "surname", "birthdate", "phone", "email"]
@@ -61,21 +62,21 @@ class ClientForm(forms.ModelForm):
 
         return client_surname
 
-    def clean_phone(self):
-        phone = self.cleaned_data["phone"]
-        if not phone:
-            raise forms.ValidationError("Phone cannot be empty")
-
-        if len(phone) < 9:
-            raise forms.ValidationError("The number provided is too short")
-
-        try:
-            parsed = phonenumbers.parse(phone, None)
-        except phonenumbers.NumberParseException as error:
-            raise forms.ValidationError(f"{error.args[0]}")
-
-        formatted_phone = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
-        return formatted_phone
+    # def clean_phone(self):
+    #     phone = self.cleaned_data["phone"]
+    #     if not phone:
+    #         raise forms.ValidationError("Phone cannot be empty")
+    #
+    #     if len(phone) < 9:
+    #         raise forms.ValidationError("The number provided is too short")
+    #
+    #     try:
+    #         parsed = phonenumbers.parse(phone, None)
+    #     except phonenumbers.NumberParseException as error:
+    #         raise forms.ValidationError(f"{error.args[0]}")
+    #
+    #     formatted_phone = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+    #     return formatted_phone
 
 
 class LawyerForm(forms.ModelForm):

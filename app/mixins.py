@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 
 
@@ -52,6 +53,8 @@ class CreateObjectMixin(EditObjectMixin, ABC):
             obj.user = request.user
             obj.save()
             return redirect(success_url)
+        # else:
+        #     return HttpResponseBadRequest(form.errors)
 
     def get_object(self):
         pass
