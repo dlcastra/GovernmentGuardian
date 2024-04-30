@@ -11,7 +11,7 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
-
+from celery import shared_task
 from app.forms import ClientForm, LawyerForm
 from app.mixins import CreateObjectMixin
 from app.models import Lawyer, Client
@@ -22,6 +22,7 @@ from users.forms import UserCreationFormWithEmail
 oauth = OAuth()
 
 
+@shared_task
 def send_activation_email(request, user: User):
     user_signed = Signer().sign(user.id)
     signed_url = request.build_absolute_uri(f"/activate/{user_signed}")

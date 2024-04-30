@@ -143,7 +143,13 @@ LOGIN_REDIRECT_URL = "/profile/"
 # }
 
 # Celery settings
-CELERY_BROKER_URL = "amqp://guest@localhost//"
+CELERY_BROKER_URL = "amqp://guest@localhost:5672//"
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_ENABLE_UTC = True
+CELERY_TASK_BACKEND = "rpc://"
 
 # Auth0
 AUTH0_DOMAIN = config("AUTH0_DOMAIN")
